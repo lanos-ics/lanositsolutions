@@ -1,0 +1,76 @@
+# Lanos IT Solutions — Theme & Layout Walkthrough
+
+## What Was Built
+
+A complete visual and motion foundation for the Lanos landing page — zero boilerplate remaining.
+
+---
+
+## Files Created / Modified
+
+| File | Action | Purpose |
+|------|--------|---------|
+| [src/app/globals.css](file:///d:/Lanos/nextjs-project/lanos/src/app/globals.css) | Modified | Design tokens, typography, glassmorphism variables, `.will-animate` utility |
+| [src/lib/gsap.ts](file:///d:/Lanos/nextjs-project/lanos/src/lib/gsap.ts) | New | GSAP + ScrollTrigger setup, shared defaults, [animateFadeUp](file:///d:/Lanos/nextjs-project/lanos/src/lib/gsap.ts#24-40) helper |
+| [src/components/providers/SmoothScrollProvider.tsx](file:///d:/Lanos/nextjs-project/lanos/src/components/providers/SmoothScrollProvider.tsx) | New | Lenis smooth scroll wired to GSAP ScrollTrigger RAF loop |
+| [src/components/layout/Navbar.tsx](file:///d:/Lanos/nextjs-project/lanos/src/components/layout/Navbar.tsx) | New | Glassmorphism sticky nav with GSAP entrance + mobile hamburger |
+| [src/components/layout/MainLayout.tsx](file:///d:/Lanos/nextjs-project/lanos/src/components/layout/MainLayout.tsx) | New | Server component composing providers + ambient orbs + navbar |
+| [src/app/layout.tsx](file:///d:/Lanos/nextjs-project/lanos/src/app/layout.tsx) | Modified | Inter font, Lanos metadata, MainLayout wrapper |
+| [src/app/page.tsx](file:///d:/Lanos/nextjs-project/lanos/src/app/page.tsx) | Modified | Hero section with GSAP stagger entrance animation |
+
+---
+
+## Architecture
+
+```mermaid
+graph TD
+    A[layout.tsx — Server] --> B[MainLayout.tsx — Server]
+    B --> C[SmoothScrollProvider.tsx — Client]
+    C --> D[Navbar.tsx — Client]
+    C --> E[page.tsx — Client/Hero]
+    B --> F[Ambient orb divs]
+```
+
+## Design Tokens (globals.css)
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--bg` | `#F8F9FA` | Page background |
+| `--fg` | `#1A1A1B` | Primary text |
+| `--fg-muted` | `#6B7280` | Secondary text |
+| `--accent` | `#4361EE` | Links, glows, gradient |
+| `--glass-bg` | `rgba(248,249,250,0.72)` | Navbar backdrop |
+| `--nav-h` | `68px` | Shared nav height |
+| `--ease-out-expo` | cubic-bezier | GSAP animation curve |
+
+---
+
+## Smooth Scroll + GSAP Sync
+
+Lenis uses its own RAF loop, which calls `ScrollTrigger.update()` on every tick — ensuring scroll-triggered GSAP animations fire at the correct scroll position without drift.
+
+```
+Lenis RAF → lenis.raf(time) → lenis.on("scroll", ScrollTrigger.update)
+```
+
+---
+
+## Build Verification
+
+```
+✓ TypeScript — no errors
+✓ Static pages (4/4) generated
+Exit code: 0
+```
+
+---
+
+## Next Steps
+
+Run the dev server to see it live:
+```bash
+npm run dev
+```
+Then open [http://localhost:3000](http://localhost:3000).
+
+The Navbar will slide down on load, and the hero text will fade up after a short delay.

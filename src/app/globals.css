@@ -1,0 +1,157 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --bg:              #F8F9FA;
+  --fg:              #1A1A1B;
+  --fg-muted:        #767676;
+  --accent:          #E5404F;
+  --secondary:       #CD5473;
+  --navy:            #124898;
+  --accent-glow:     rgba(229, 64, 79, 0.18);
+  --accent-soft:     rgba(229, 64, 79, 0.08);
+
+  /* Glassmorphism */
+  --glass-bg:        rgba(248, 249, 250, 0.72);
+  --glass-border:    rgba(26, 26, 27, 0.08);
+
+  /* Typography */
+  --font-sans:       "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+                     "Segoe UI", sans-serif;
+
+  /* Spacing / Layout */
+  --nav-h:           68px;
+
+  /* Motion */
+  --ease-expo:       cubic-bezier(0.87, 0, 0.13, 1);
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-base:   0.6s;
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────── */
+@theme inline {
+  --color-bg:        var(--bg);
+  --color-fg:        var(--fg);
+  --color-accent:    var(--accent);
+  --font-sans:       var(--font-sans);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: auto; /* Lenis takes over smooth scrolling */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── Typography Scale ───────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 5rem); }
+h2 { font-size: clamp(1.75rem, 3.5vw, 3rem); }
+h3 { font-size: clamp(1.25rem, 2.5vw, 2rem); }
+
+p {
+  color: var(--fg-muted);
+  max-width: 65ch;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─── Utility: GSAP Entrance Targets ────────────────────────── */
+.will-animate {
+  opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
+}
+
+/* ─── Utility: Accent Blur Orb ──────────────────────────────── */
+.accent-orb {
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  position: absolute;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 27, 0.18);
+  border-radius: 99px;
+}
+
+/* ─── Mobile Responsive ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Contact split layout → single column */
+  section > div[style*="1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Testimonials grid → single column */
+  section > div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce section padding on mobile */
+  section {
+    padding-left:  1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  /* Blog trailer: stack cards vertically */
+  section > div[style*="overflowX"] {
+    flex-direction: column;
+    overflow-x: visible !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ensure headings don't overflow */
+  h1, h2 {
+    word-break: break-word;
+  }
+
+  /* Back-to-top: smaller on mobile */
+  button[aria-label="Back to top"] {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    bottom: 1.25rem !important;
+    right: 1.25rem !important;
+  }
+}
+
