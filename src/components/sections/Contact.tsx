@@ -141,7 +141,7 @@ export default function Contact() {
                 color:         "var(--fg)",
               }}
             >
-              Let's build{" "}
+              Let's build the{" "}
               <br />
               <em
                 style={{
@@ -154,7 +154,7 @@ export default function Contact() {
                   paddingRight:         "0.05em",
                 }}
               >
-                the future.
+                tech future together.
               </em>
             </h2>
           </div>
@@ -168,8 +168,8 @@ export default function Contact() {
             }}
           >
             Whether you're looking to launch an EdTech product, modernise your
-            tech stack, or explore a research partnership — we'd love to hear from
-            you.
+            tech stack, or explore a research partnership — we'd love to hear
+            from you.
           </p>
 
           {/* Location block */}
@@ -187,16 +187,16 @@ export default function Contact() {
               Location
             </span>
             <span style={{ fontSize: "0.95rem", color: "var(--fg)", fontWeight: 500 }}>
-              Bangalore, India
+              Sagar, Madhya Pradesh, India 470004
             </span>
             <span style={{ fontSize: "0.85rem", color: "var(--fg-muted)" }}>
-              Operating globally · Remote-first
+              Building from Sagar. Scaling to global systems.
             </span>
           </div>
 
           {/* Email link */}
           <a
-            href="mailto:hello@lanos.in"
+            href="mailto:contact@lanositsolutions.com"
             style={{
               fontSize:      "0.9rem",
               fontWeight:    500,
@@ -208,7 +208,7 @@ export default function Contact() {
               letterSpacing: "-0.01em",
             }}
           >
-            hello@lanos.in ↗
+            contact@lanositsolutions.com ↗
           </a>
         </div>
 
@@ -360,8 +360,8 @@ export default function Contact() {
         }}
       >
         <iframe
-          title="Lanos — Bangalore Office"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d497698.8044374025!2d77.35074454999999!3d12.9539974!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka%2C%20India!5e0!3m2!1sen!2sin!4v1708000000000!5m2!1sen!2sin"
+          title="Lanos IT Solutions — Sagar Office"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.0!2d78.79311920!3d23.85161470!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDUxJzA1LjgiTiA3OMKwNDcnMzUuMiJF!5e0!3m2!1sen!2sin!4v1708000000000!5m2!1sen!2sin"
           width="100%"
           height="100%"
           style={{ border: 0, display: "block", filter: "grayscale(0.2) contrast(1.02)" }}

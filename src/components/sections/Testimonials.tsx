@@ -5,12 +5,12 @@ import { gsap } from "@/lib/gsap";
 
 /* ─── Testimonial data ────────────────────────────────────── */
 const EDTECH_TESTIMONIALS = [
-  { name: "Aisha Rahman",   role: "B.Sc Student, Delhi",       text: "The adaptive quiz engine felt like it knew exactly where I was struggling. My exam scores jumped 30% in one semester." },
-  { name: "Karan Mehta",    role: "Coding Bootcamp Graduate",   text: "I'd tried three other platforms. Lanos EdTech was the first one that actually kept me engaged past week two." },
-  { name: "Priya Nair",     role: "Teacher, Kerala",            text: "The dashboard gives me insights I never had before — which students are falling behind, and why. It's transformed how I teach." },
-  { name: "Rohan Gupta",    role: "MBA Student, Bangalore",     text: "Case-based learning, built right in. It's how my MBA program should have worked from day one." },
-  { name: "Sana Mirza",     role: "High School Student",        text: "I went from dreading maths to actually looking forward to practice sets. The gamification is subtle but effective." },
-  { name: "Vikram Joshi",   role: "Corporate Trainer",          text: "We rolled out Lanos for 400 employees. Completion rates doubled compared to our old LMS." },
+  { name: "Ashish Ahirwar",   role: "AutoCAD Student",              text: "Completed my AutoCAD training in just six weeks with excellent results. The structured learning and hands-on support made all the difference." },
+  { name: "Anurag Bala",      role: "Python & Web Dev Student",     text: "Learning Python and web development here has been transformative. The teaching is clear, and the hands-on practice makes complex concepts click." },
+  { name: "Prachi Rohit",     role: "Web Development Student",      text: "One of the best places for learning web development and programming. My expectations were consistently exceeded — start to finish." },
+  { name: "Sachin Yadav",     role: "Programming Student",          text: "The best institute for mastering Python, C++, and JavaScript. The faculty is deeply supportive and genuinely invested in your growth." },
+  { name: "Vedant Nagayach",  role: "C & Python Student",           text: "Friendly environment and highly skilled faculty. I learned C and Python effectively within a few months — practical skills I use every day." },
+  { name: "Shaurya",          role: "Student",                      text: "Crystal-clear teaching and genuinely supportive faculty. An outstanding learning experience from start to finish." },
 ];
 
 const CONSULTANCY_TESTIMONIALS = [

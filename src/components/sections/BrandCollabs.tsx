@@ -5,14 +5,13 @@ import { gsap } from "@/lib/gsap";
 
 /* ─── Partner list (duplicated for seamless loop) ─────────── */
 const PARTNERS = [
-  { name: "Notion",    weight: 600, size: "1.4rem" },
-  { name: "Vercel",    weight: 700, size: "1.3rem" },
-  { name: "Linear",    weight: 600, size: "1.35rem" },
-  { name: "Figma",     weight: 700, size: "1.4rem" },
-  { name: "Stripe",    weight: 700, size: "1.3rem" },
-  { name: "Framer",    weight: 600, size: "1.35rem" },
-  { name: "Supabase",  weight: 700, size: "1.2rem" },
-  { name: "Resend",    weight: 600, size: "1.3rem" },
+  { name: "TCS",            weight: 700, size: "1.4rem" },
+  { name: "Tech Mahindra",  weight: 600, size: "1.25rem" },
+  { name: "Infosys",        weight: 700, size: "1.35rem" },
+  { name: "Wipro",          weight: 700, size: "1.4rem" },
+  { name: "Cisco",          weight: 700, size: "1.35rem" },
+  { name: "Cognizant",      weight: 600, size: "1.3rem" },
+  { name: "Rockton Software", weight: 600, size: "1.2rem" },
 ];
 
 /* ─── One track (original + clone for seamless loop) ──────── */
@@ -101,7 +100,7 @@ export default function BrandCollabs() {
           marginBottom:  "2.5rem",
         }}
       >
-        Trusted by teams at
+        Our Learners Work At
       </p>
 
       {/* Row 1 — scrolls left */}

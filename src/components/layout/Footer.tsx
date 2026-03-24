@@ -172,11 +172,11 @@ export default function Footer() {
                   maxWidth:   "28ch",
                 }}
               >
-                EdTech, IT Solutions &amp; Research — built for a future
-                that hasn't arrived yet.
+                EdTech, Software Systems &amp; Research — built to develop
+                engineers, create scalable products, and explore future technologies.
               </p>
               <a
-                href="mailto:hello@lanos.in"
+                href="mailto:contact@lanositsolutions.com"
                 style={{
                   fontSize:      "0.82rem",
                   fontWeight:    500,
@@ -185,7 +185,7 @@ export default function Footer() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                hello@lanos.in
+                contact@lanositsolutions.com
               </a>
             </div>
 
@@ -248,7 +248,7 @@ export default function Footer() {
               © {new Date().getFullYear()} Lanos Technologies Pvt. Ltd.
             </span>
             <span style={{ fontSize: "0.78rem", color: "var(--fg-muted)", opacity: 0.45 }}>
-              Bangalore · India
+              Sagar · Madhya Pradesh · India
             </span>
           </div>
         </div>

@@ -10,10 +10,17 @@ const DEPARTMENTS = [
     id:          "edtech",
     icon:        "◈",
     label:       "EdTech",
-    heading:     "Education, Reimagined.",
-    description:
-      "We design learning platforms that feel less like software and more like mentors — adaptive, engaging, and built for real outcomes.",
+    heading:     "Become a Software Engineer.",
+    description: (
+      <>
+        Start from fundamentals and progress into real-world development — from{" "}
+        <strong>coder</strong> to <strong>Industry-Ready Software Engineer</strong>.
+        {" "}Learn by building applications driven by current industry demand, with
+        guaranteed paid internships and 100% placement under the Lanos Ecosystem.
+      </>
+    ),
     href:        "/edtech",
+    cta:         "Explore Learning",
     fromX:       -80,  // slides in from left
     fromY:        0,
     delay:        0,
@@ -24,10 +31,11 @@ const DEPARTMENTS = [
     id:          "solutions",
     icon:        "◎",
     label:       "IT Solutions",
-    heading:     "Systems That Scale.",
+    heading:     "Build Scalable Software.",
     description:
-      "End-to-end software consultancy and delivery — from architecture to deployment. We turn complex problems into elegant, maintainable products.",
+      "We design and develop production-grade systems for startups and businesses — built to scale, perform, and last, at a price never seen before.",
     href:        "/solutions",
+    cta:         "View Solutions & Pricing",
     fromX:        0,   // slides in from below
     fromY:        80,
     delay:        0.12,
@@ -38,10 +46,11 @@ const DEPARTMENTS = [
     id:          "rd",
     icon:        "◬",
     label:       "R&D",
-    heading:     "Where Ideas Escape Gravity.",
+    heading:     "It's All About Research.",
     description:
-      "Our research division explores the frontier — AI, distributed systems, and deep-tech — turning curiosity into prototypes and prototypes into products.",
-    href:        "/rd",
+      "We don't follow the frontier — we define it. Our research teams push the boundaries of AI, BCI/EEG technology, operating systems, IoT/drone systems, and next-generation computing — engineering what doesn't exist yet.",
+    href:        "/research",
+    cta:         "Explore Research",
     fromX:        80,  // slides in from right
     fromY:        0,
     delay:        0.22,
@@ -52,7 +61,7 @@ const DEPARTMENTS = [
 
 /* ─── Individual card ─────────────────────────────────────── */
 function DeptCard({
-  icon, label, heading, description, href,
+  icon, label, heading, description, href, cta,
   accentColor, iconColor,
 }: (typeof DEPARTMENTS)[number]) {
   const [hovered, setHovered] = useState(false);
@@ -158,7 +167,7 @@ function DeptCard({
           transition: "opacity 0.25s ease, gap 0.3s ease",
         }}
       >
-        Learn more
+        {cta}
         <span
           style={{
             display:        "inline-flex",
@@ -246,7 +255,7 @@ export default function WhatIsLanos() {
             color:         "var(--fg)",
           }}
         >
-          Three disciplines.{" "}
+          A Complete Tech Ecosystem —{" "}
           <span
             style={{
               fontStyle: "italic",
@@ -254,9 +263,22 @@ export default function WhatIsLanos() {
               color: "var(--fg-muted)",
             }}
           >
-            One mission.
+            Built for Growth.
           </span>
         </h2>
+        <p
+          style={{
+            fontSize:   "clamp(0.95rem, 1.3vw, 1.1rem)",
+            lineHeight: 1.72,
+            color:      "var(--fg-muted)",
+            marginTop:  "1.25rem",
+            maxWidth:   "52ch",
+          }}
+        >
+          Lanos is a unified system where learning turns into real-world
+          engineering, engineering turns into production systems, and systems
+          evolve into future technologies.
+        </p>
       </div>
 
       {/* 3-column grid */}
@@ -274,6 +296,26 @@ export default function WhatIsLanos() {
           </div>
         ))}
       </div>
+
+      {/* Bottom ecosystem line */}
+      <p
+        style={{
+          textAlign:     "center",
+          fontSize:      "clamp(0.95rem, 1.3vw, 1.1rem)",
+          color:         "var(--fg-muted)",
+          lineHeight:    1.72,
+          marginTop:     "3.5rem",
+          maxWidth:      "60ch",
+          marginLeft:    "auto",
+          marginRight:   "auto",
+          fontWeight:    400,
+          letterSpacing: "-0.01em",
+        }}
+      >
+        All three operate as one ecosystem:{" "}
+        <strong style={{ fontWeight: 600, color: "var(--fg)" }}>LANOS ECOSYSTEM</strong>
+        {" "}— enabling continuous growth from learning → real-world execution → innovation.
+      </p>
 
       {/* Icon pulse keyframe */}
       <style>{`

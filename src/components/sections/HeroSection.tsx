@@ -92,7 +92,7 @@ export default function HeroSection() {
                 animation: "pulse 2.4s ease-in-out infinite",
               }}
             />
-            EdTech · Solutions · R&amp;D
+            Education · Software Systems · Advanced Research
           </span>
         </div>
 
@@ -126,9 +126,9 @@ export default function HeroSection() {
               WebkitBackgroundClip: "text",
               WebkitTextFillColor:  "transparent",
               backgroundClip:       "text",
-            }}>Where </span>
+            }}> </span>
             <FlipWords 
-              words={["Education", "Solutions", "Research"]} 
+              words={["Learn IT/CS Skills", "Build Real Applications", "Explore Tech Careers"]} 
               duration={2800} 
               style={{
                 background:   "linear-gradient(125deg, #CD5473 0%, var(--accent) 55%, #124898 100%)",
@@ -140,7 +140,7 @@ export default function HeroSection() {
             />
           </em>
           <br />
-          Meets Execution.
+          inside one unified tech ecosystem.
         </h1>
 
         {/* Sub-copy */}
@@ -155,8 +155,9 @@ export default function HeroSection() {
             fontWeight:   400,
           }}
         >
-          We build intelligent platforms that turn knowledge into action — for
-          students, enterprises, and the innovators between them.
+          We turn learning into real-world engineering — guiding students from
+          skills to production systems, helping businesses build scalable
+          software, and enabling innovators to work on future technologies.
         </p>
 
         {/* Borderless CTA */}
@@ -176,7 +177,7 @@ export default function HeroSection() {
             }}
           >
             <span className="cta-text" style={{ transition: "color 0.22s ease" }}>
-              Start your journey
+              Start Your Engineering Journey
             </span>
             <span
               className="cta-arrow"
