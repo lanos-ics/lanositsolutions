@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
@@ -114,7 +114,7 @@ export default function EdTechHeroSection() {
           gridTemplateColumns: "1fr min(420px, 38vw)",
           alignItems:    "center",
           gap:           "4rem",
-          padding:       "3.5rem clamp(1.75rem, 8vw, 9rem) 0",
+          padding:       "3.5rem clamp(1.75rem, 8vw, 9rem) 0 clamp(1.75rem, 8vw, 9rem)",
         }}
       >
         {/* Left — text */}
@@ -145,7 +145,7 @@ export default function EdTechHeroSection() {
                   animation: "etPulse 2.4s ease-in-out infinite",
                 }}
               />
-              Lanos EdTech · Career Ecosystem
+              The Only Platform You Need to
             </span>
           </div>
 
@@ -154,15 +154,15 @@ export default function EdTechHeroSection() {
             className="et-item"
             style={{
               fontWeight:    200,
-              fontSize:      "clamp(2.8rem, 6.5vw, 8rem)",
+              fontSize:      "clamp(2rem, 4.5vw, 5rem)",
               lineHeight:    1.04,
               letterSpacing: "-0.045em",
               color:         "var(--fg)",
-              maxWidth:      "14ch",
+              maxWidth:      "15ch",
               marginBottom:  "1rem",
             }}
           >
-            Build Beyond{" "}
+            Learn IT Skills & {" "}
             <em
               style={{
                 fontStyle:            "italic",
@@ -171,32 +171,81 @@ export default function EdTechHeroSection() {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor:  "transparent",
                 backgroundClip:       "text",
-                paddingRight:         "0.06em",
+                paddingRight:         "0.16em",
                 display:              "inline",
+                width:                "100%",
               }}
             >
-              Coding.
+              Become a
+            </em>
+            <br />
+            <em
+              style={{
+                fontStyle:            "italic",
+                fontWeight:           300,
+                background:           "linear-gradient(130deg, var(--accent) 0%, #CD5473 55%, #124898 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor:  "transparent",
+                backgroundClip:       "text",
+                paddingRight:         "0.16em",
+                display:              "inline",
+                width:                "100%",
+              }}
+            >
+              Software Engineer
             </em>
           </h1>
 
-          {/* Sub-headline */}
-          <p
+          {/* Sub-headline — step flow */}
+          <div
             className="et-item"
             style={{
-              fontSize:      "clamp(1.05rem, 1.8vw, 1.45rem)",
-              fontWeight:    300,
-              color:         "var(--fg-muted)",
-              lineHeight:    1.55,
-              maxWidth:      "38ch",
-              letterSpacing: "-0.01em",
+              display:       "flex",
+              alignItems:    "center",
+              flexWrap:      "wrap",
+              gap:           "0.4rem",
               marginBottom:  "2.6rem",
             }}
           >
-            Enter the{" "}
-            <span style={{ color: "var(--fg)", fontWeight: 400 }}>
-              Lanos Technology Ecosystem.
-            </span>
-          </p>
+            {[
+              { label: "Learn",  active: true  },
+              { label: "Intern", active: false },
+              { label: "Placed", active: false },
+            ].map(({ label, active }, i, arr) => (
+              <React.Fragment key={label}>
+                <span
+                  style={{
+                    display:       "inline-flex",
+                    alignItems:    "center",
+                    gap:           "0.3rem",
+                    fontSize:      "clamp(0.88rem, 1.3vw, 1.05rem)",
+                    fontWeight:    active ? 600 : 400,
+                    letterSpacing: "-0.01em",
+                    color:         active ? "var(--accent)" : "var(--fg)",
+                    padding:       "0.22rem 0.7rem",
+                    borderRadius:  "99px",
+                    border:        active ? "1px solid rgba(229,64,79,0.35)" : "1px solid rgba(26,26,27,0.12)",
+                    background:    active ? "rgba(229,64,79,0.07)" : "transparent",
+                    whiteSpace:    "nowrap",
+                  }}
+                >
+                  {label}
+                </span>
+                {i < arr.length - 1 && (
+                  <span
+                    key={`arrow-${i}`}
+                    style={{
+                      fontSize:   "0.9rem",
+                      color:      "rgba(229,64,79,0.5)",
+                      fontWeight: 300,
+                    }}
+                  >
+                    ⟶
+                  </span>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
 
           {/* Three ghost CTAs */}
           <div
@@ -267,7 +316,7 @@ export default function EdTechHeroSection() {
                 transition:    "border-color 0.22s ease, color 0.22s ease",
               }}
             >
-              Book Counselling
+              Explore Internship Opportunities
             </button>
           </div>
 
