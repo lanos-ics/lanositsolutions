@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export default function EdTechHeroSection() {
   const sectionRef    = useRef<HTMLElement>(null);
@@ -10,38 +9,66 @@ export default function EdTechHeroSection() {
 
   /* ─── Mount: staggered fade-up + skew ───────────────────────── */
   useEffect(() => {
-    const ctx = gsap.context(() => {
+  let ctx: any;
+
+  (async () => {
+    const gsapModule = await import("gsap");
+    const ScrollTriggerModule = await import("gsap/ScrollTrigger");
+
+    const gsap = gsapModule.gsap || gsapModule.default;
+    const ScrollTrigger = ScrollTriggerModule.ScrollTrigger;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    ctx = gsap.context(() => {
       gsap.set(".et-item", { opacity: 0, y: 52, skewY: 1.1 });
       gsap.to(".et-item", {
-        opacity:  1,
-        y:        0,
-        skewY:    0,
+        opacity: 1,
+        y: 0,
+        skewY: 0,
         duration: 1.15,
-        ease:     "power4.out",
-        stagger:  0.13,
-        delay:    0.2,
+        ease: "power4.out",
+        stagger: 0.13,
+        delay: 0.2,
       });
     }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+  })();
+
+  return () => ctx?.revert();
+}, []);
 
   /* ─── Scroll: philosophy block float-in ─────────────────────── */
   useEffect(() => {
+  let trigger: any;
+
+  (async () => {
     if (!philosophyRef.current) return;
+
+    const gsapModule = await import("gsap");
+    const ScrollTriggerModule = await import("gsap/ScrollTrigger");
+
+    const gsap = gsapModule.gsap || gsapModule.default;
+    const ScrollTrigger = ScrollTriggerModule.ScrollTrigger;
+
+    gsap.registerPlugin(ScrollTrigger);
+
     gsap.set(philosophyRef.current, { opacity: 0, y: 32 });
-    const trigger = ScrollTrigger.create({
-      trigger:  philosophyRef.current,
-      start:    "top 82%",
-      onEnter:  () =>
+
+    trigger = ScrollTrigger.create({
+      trigger: philosophyRef.current,
+      start: "top 82%",
+      onEnter: () =>
         gsap.to(philosophyRef.current!, {
-          opacity:  1,
-          y:        0,
+          opacity: 1,
+          y: 0,
           duration: 1.1,
-          ease:     "power3.out",
+          ease: "power3.out",
         }),
     });
-    return () => trigger.kill();
-  }, []);
+  })();
+
+  return () => trigger?.kill();
+}, []);
 
   return (
     <section
@@ -289,8 +316,9 @@ export default function EdTechHeroSection() {
               className="et-cta-ghost"
               onClick={() => {
                 const target = document.getElementById("edtech-contact");
-                if (window.__lenis && target) {
-                  window.__lenis.scrollTo(target, {
+                const lenis = typeof window !== "undefined" ? (window as any).__lenis : undefined;
+                if (lenis && target) {
+                  lenis.scrollTo(target, {
                     duration: 1.4,
                     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                   });
