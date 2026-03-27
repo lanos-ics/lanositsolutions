@@ -101,7 +101,7 @@ export default function HeroSection() {
           className="hero-item"
           style={{
             fontWeight:    200,
-            fontSize:      "clamp(2.1rem, 6.5vw, 7.5rem)",
+            fontSize:      "clamp(1.8rem, 6vw, 3.8rem)",
             lineHeight:    1.1,
             letterSpacing: "-0.03em",
             color:         "var(--fg)",
