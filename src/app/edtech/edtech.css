@@ -1129,7 +1129,7 @@
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
           gap: 1.5rem;
-          align-items: start;
+          align-items: stretch;
         }
 
         /* Base card */
@@ -1188,6 +1188,8 @@
           flex-direction: column;
           gap: 1rem;
           z-index: 1;
+          height: 100%;
+          box-sizing: border-box;
         }
 
         /* Step tag pill */

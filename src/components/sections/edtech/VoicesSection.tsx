@@ -10,31 +10,255 @@ interface Voice {
   role: string;
   quote: string;
   initials: string;
-  hue: number; // avatar accent hue for color-reveal
+  hue: number;
 }
 
-/* ─── Active Interns (top row → left scroll) ─────────────────────── */
+/* ─── Active Interns (The Current Pulse) ─────────────────────── */
 const INTERNS: Voice[] = [
-  { id: "i1", name: "Aryan Mehta",      role: "Full Stack Intern",     quote: "Building production-level code from day one.",                      initials: "AM", hue: 231 },
-  { id: "i2", name: "Priya Nair",       role: "AI/ML Intern",          quote: "The 8-hour pulse changed how I think about logic.",                  initials: "PN", hue: 270 },
-  { id: "i3", name: "Rohan Sharma",     role: "DevOps Intern",         quote: "Not just an internship — it's a structured launchpad.",              initials: "RS", hue: 195 },
-  { id: "i4", name: "Sneha Patel",      role: "Product Intern",        quote: "Every sprint felt like shipping for a real company.",                initials: "SP", hue: 340 },
-  { id: "i5", name: "Karan Joshi",      role: "Cyber Security Intern", quote: "Real threat modelling. Real stakes. Real growth.",                   initials: "KJ", hue: 15  },
-  { id: "i6", name: "Ananya Singh",     role: "BCI Research Intern",   quote: "Lanos gave me access to neurotechnology I couldn't find elsewhere.", initials: "AS", hue: 160 },
-  { id: "i7", name: "Harsh Verma",      role: "IoT Intern",            quote: "From circuits to the cloud — I built it all under one roof.",        initials: "HV", hue: 45  },
-  { id: "i8", name: "Divya Kulkarni",   role: "AR/VR Intern",          quote: "My final project shipped as a real client prototype.",               initials: "DK", hue: 300 },
+  {
+    id: "i1",
+    name: "Yashwardhan Jain",
+    role: "Full Stack Intern",
+    quote: "I recently discovered an ideal study spot that has quickly become my go-to place for focused work and learning. The tranquil atmosphere allows me to immerse myself in my studies without the usual hustle and bustle. The free Wi-Fi is reliable, enabling seamless access to online resources.",
+    initials: "YJ",
+    hue: 0
+  },
+  {
+    id: "i2",
+    name: "Sanskriti Chouhan",
+    role: "Software Intern",
+    quote: "Lanos Institute is a excellent coaching. It was a great experience for me to learn the way of teaching is very easy to understand the topic and also friendly atmosphere. I am glad that I joined a Lanos Institute.",
+    initials: "SC",
+    hue: 24
+  },
+  {
+    id: "i3",
+    name: "Isaac Ahirwar",
+    role: "Software Intern",
+    quote: "The teachers are super knowledgeable and always ready to help. The study materials provided are really comprehensive and have been a great resource for my preparation. I'm really happy with my choice and would definitely recommend it!",
+    initials: "IA",
+    hue: 48
+  },
+  {
+    id: "i4",
+    name: "Kaushlendra Tiwari",
+    role: "C++ Intern",
+    quote: "I had an excellent teaching experience at the Lanos Institute for Programming Language C. The institute provided a well-structured curriculum and excellent resources. This makes it easy to understand C programming concepts such as pointers and data structures.",
+    initials: "KT",
+    hue: 72
+  },
+  {
+    id: "i5",
+    name: "Prachi Rohit",
+    role: "Web Dev Intern",
+    quote: "It's one of the best coaching for web development and language courses in Sagar. I found endless learning opportunities that was based on latest company requirements. The mentors here work on a mission to bring out best developers.",
+    initials: "PR",
+    hue: 96
+  },
+  {
+    id: "i6",
+    name: "Vinayak Shukla",
+    role: "Software Intern",
+    quote: "It's a very good institute to learn new software skills with indepth knowledge and conceptual clarity. Highly recommended to all persons who want to pursue their career in computer science and software skills.",
+    initials: "VS",
+    hue: 120
+  },
+  {
+    id: "i7",
+    name: "Ankita Patel",
+    role: "C++ Intern",
+    quote: "C++ Mastermind is an excellent coaching institute. With its expert faculty, structured curriculum, and practical approach, it offers great value for aspiring programmers. The quality of education makes it a top choice.",
+    initials: "AP",
+    hue: 144
+  },
+  {
+    id: "i8",
+    name: "Anurag Bala",
+    role: "Python Intern",
+    quote: "I am currently learning Python and Web development from LANOS institute. The trainers provide precise and accurate knowledge. LANOS provides a quiet, peaceful and positive environment that bolsters easy learning.",
+    initials: "AB",
+    hue: 168
+  },
+  {
+    id: "i9",
+    name: "Sachin Yadav",
+    role: "Full Stack Intern",
+    quote: "One of the best institutions for programming languages like Python, C++, and Javascript. Currently I am doing a Python full stack course here and from my experience I will say it is the best institution.",
+    initials: "SY",
+    hue: 192
+  },
+  {
+    id: "i10",
+    name: "Mahek Choudhary",
+    role: "C++ Developer",
+    quote: "I have completed C++ course from this institute and my experience was too good as the faculties here are experienced and supportive and they are always available for doubt solving. Definitely a good choice!",
+    initials: "MC",
+    hue: 216
+  },
+  {
+    id: "i11",
+    name: "Niranjan Yadav",
+    role: "Software Intern",
+    quote: "At Lanos, innovation thrives in a dynamic environment. Expert faculty guide students towards excellence. Hands-on experiences prepare graduates for real-world challenges. Where passion meets opportunity in the world of technology.",
+    initials: "NY",
+    hue: 240
+  },
+  {
+    id: "i12",
+    name: "C O D E R {Web Developer}",
+    role: "Java Intern",
+    quote: "I took a 2-month Core Java course here, and I can say that Lanos institute provides the best coding environment in the city. If you want to learn Python, Java, or web development, I highly recommend their course.",
+    initials: "CD",
+    hue: 264
+  },
+  {
+    id: "i13",
+    name: "Vedant Nagayach",
+    role: "Python Intern",
+    quote: "It's totally amazing. The staff and their skills and command on language are awesome. Very friendly environment, Helpful faculty. Made me master in C language and Python in just 5/6 months.",
+    initials: "VN",
+    hue: 288
+  },
+  {
+    id: "i14",
+    name: "Ayushi Rajak",
+    role: "Software Intern",
+    quote: "Best coaching ever I came to. The systematic customized structure of syllabus learning is amazing and the personal development classes are too good. Have a visit to pioneer your future in Lanos.",
+    initials: "AR",
+    hue: 312
+  },
+  {
+    id: "i15",
+    name: "Lalit Kurmi",
+    role: "Research Intern",
+    quote: "I am impressed by the way the learning resource centre is not only systematically arranged but effectively used. Let me congratulate the librarian & his team for their painstaking efforts to see the future in order.",
+    initials: "LK",
+    hue: 336
+  }
 ];
 
-/* ─── Alumni (bottom row → right scroll) ────────────────────────── */
+/* ─── Alumni (The Success Network) ─────────────────────────── */
 const ALUMNI: Voice[] = [
-  { id: "a1", name: "Vikram Iyer",      role: "SDE at Google",         quote: "From Lanos R&D to a Senior SDE role. The depth here is unmatched.", initials: "VI", hue: 231 },
-  { id: "a2", name: "Meera Reddy",      role: "Founding Engineer, Zeta",quote: "Building my own startup with the foundations I laid at Lanos.",    initials: "MR", hue: 195 },
-  { id: "a3", name: "Aditya Bhatt",     role: "SDE-2 at Microsoft",    quote: "The transition to corporate was seamless thanks to Lanos culture.",  initials: "AB", hue: 160 },
-  { id: "a4", name: "Nisha Agarwal",    role: "ML Engineer at OpenAI", quote: "Lanos didn't teach me to code. It taught me to think in systems.",  initials: "NA", hue: 270 },
-  { id: "a5", name: "Siddharth Rao",    role: "Product Manager, Razorpay", quote: "The product sprints at Lanos gave me a PM edge from day one.",   initials: "SR", hue: 15  },
-  { id: "a6", name: "Tanvi Choudhary",  role: "DevOps Lead at Infosys", quote: "Eight hours a day of real infra work — nothing else compares.",    initials: "TC", hue: 45  },
-  { id: "a7", name: "Rahul Gupta",      role: "Security Analyst, Wipro", quote: "Lanos's cyber curriculum is years ahead of university content.",   initials: "RG", hue: 340 },
-  { id: "a8", name: "Pooja Desai",      role: "Co-founder, NeuralEdge", quote: "We raised seed funding on the prototype I built as a Lanos intern.", initials: "PD", hue: 300 },
+  {
+    id: "a1",
+    name: "Bhawna Badoniya",
+    role: "Software Developer",
+    quote: "In this time of hard competition it's really tough to find an institute that meets all your desired things. My search ended up here at LANOS. I got my skills sharpened and also my certificates at a very reasonable fee.",
+    initials: "BB",
+    hue: 0
+  },
+  {
+    id: "a2",
+    name: "Ashish Ahirwar",
+    role: "AutoCAD Developer",
+    quote: "This institute is dedicated to learning all types of software like AutoCAD. I have studied AutoCAD for a full 6 weeks and I have got the best result. I am very happy, thank you for the support.",
+    initials: "AA",
+    hue: 24
+  },
+  {
+    id: "a3",
+    name: "Miss Happy Queen",
+    role: "C++ Developer",
+    quote: "I have learned a lot from Lanos Institute. I have trained in C & C++ from here and also got the opportunity to work with the group. You should join us!",
+    initials: "MQ",
+    hue: 48
+  },
+  {
+    id: "a4",
+    name: "Amisha Gupta",
+    role: "Software Engineer",
+    quote: "Lanos is a very good institute for developing great knowledge and helping us to grow. It also develops confidence and motivates us to build our career and personality too.",
+    initials: "AG",
+    hue: 72
+  },
+  {
+    id: "a5",
+    name: "Somil Jain",
+    role: "Systems Engineer",
+    quote: "Very good institute for learning coding and computer courses. I learned good coding skills here and I'm very confident. The mentors guide you nicely and in good ways.",
+    initials: "SJ",
+    hue: 96
+  },
+  {
+    id: "a6",
+    name: "Ayush",
+    role: "AutoCAD Developer",
+    quote: "Amazing institute with perfect faculty, overall it's a fantastic place to learn. I mastered AutoCAD 2D and 3D software from here and my overall learning experience was fascinating.",
+    initials: "AY",
+    hue: 120
+  },
+  {
+    id: "a7",
+    name: "Gaurav Soni",
+    role: "Java Developer",
+    quote: "Thanks to LANOS, I enjoy learning to code and create projects with my teacher. There are also many types of courses available like C, C++, Python, and Java.",
+    initials: "GS",
+    hue: 144
+  },
+  {
+    id: "a8",
+    name: "Aditi Badoniya",
+    role: "Software Engineer",
+    quote: "I must say LANOS institute is one of the best facilitate institutes around Sagar and the faculties and facilities are also recommendable. You must visit once.",
+    initials: "AB",
+    hue: 168
+  },
+  {
+    id: "a9",
+    name: "Darpana Mhatre",
+    role: "Frontend Developer",
+    quote: "I had a very great experience at this place. Our teacher is very friendly and teaches all technical topics very clearly. They provide us with good facilities.",
+    initials: "DM",
+    hue: 192
+  },
+  {
+    id: "a10",
+    name: "Bisty Bakery & Cafe",
+    role: "Python Developer",
+    quote: "Lanos Institute is the best institute in Sagar and the best Python institute. Internship is also available here for C++, Java, and Web Full Stack courses.",
+    initials: "BC",
+    hue: 216
+  },
+  {
+    id: "a11",
+    name: "Deeksha Jain",
+    role: "Software Developer",
+    quote: "This institute is very good to learn computer courses and there is a very good coding culture in Sagar. I really like the way of teaching.",
+    initials: "DJ",
+    hue: 240
+  },
+  {
+    id: "a12",
+    name: "Umesh Patidar",
+    role: "Web Developer",
+    quote: "I am doing my Front End Web Development course from here. I honestly say this is the best institute for programming courses in Makronia, Sagar.",
+    initials: "UP",
+    hue: 264
+  },
+  {
+    id: "a13",
+    name: "Ankit Tiwari",
+    role: "Java Developer",
+    quote: "Best Python institute in Makroniya, Sagar. Best experience and all programming languages are available like Java, Web Development, C, and C++.",
+    initials: "AT",
+    hue: 288
+  },
+  {
+    id: "a14",
+    name: "Vansh Raikwar",
+    role: "Software Engineer",
+    quote: "Coding and programming language ke liye yah ek bhut acchi institute hai aur hamare Pawan Sir is the best teacher.",
+    initials: "VR",
+    hue: 312
+  },
+  {
+    id: "a15",
+    name: "Aniket Sharma",
+    role: "Java Developer",
+    quote: "Supportive, clears all doubts and friendly nature. In Sagar, Lanos is the best coding class for C, C++, Java, and Python.",
+    initials: "AS",
+    hue: 336
+  }
 ];
 
 /* ─── Avatar ────────────────────────────────────────────────────── */

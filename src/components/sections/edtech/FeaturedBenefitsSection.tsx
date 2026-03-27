@@ -8,8 +8,8 @@ const BENEFITS = [
   {
     id: "gamification",
     tag: "01",
-    headline: "Level up your logic.",
-    body: "Real XP, skill trees, and ranked challenges — gamified progression that wires your technical intuition through play.",
+    headline: "Level up your Thinking",
+    body: "Build problem-solving ability through structured challenges, real tasks, and continuous progression.",
     icon: (
       <svg viewBox="0 0 48 48" fill="none" strokeWidth="1.3" stroke="currentColor" style={{ width: 32, height: 32 }}>
         <path d="M12 36L24 12L36 36" strokeLinecap="round" strokeLinejoin="round" />
@@ -26,7 +26,7 @@ const BENEFITS = [
     id: "product",
     tag: "02",
     headline: "Learn while building.",
-    body: "Every concept ships as a product. Project-based sprints with real product cycles, user research, and launch pressure.",
+    body: "Every concept becomes a real project — not notes, not theory, but working systems.",
     icon: (
       <svg viewBox="0 0 48 48" fill="none" strokeWidth="1.3" stroke="currentColor" style={{ width: 32, height: 32 }}>
         <rect x="8" y="14" width="32" height="22" rx="3" />
@@ -41,8 +41,8 @@ const BENEFITS = [
   {
     id: "intensity",
     tag: "03",
-    headline: "The 8-Hour Pulse.",
-    body: "Simulate an active internship every single day. 8 structured hours. Zero passive learning.",
+    headline: "The 8-Hour Execution Mode",
+    body: "Train like a real engineer. Structured daily work, zero passive learning, full immersion.",
     icon: (
       <svg viewBox="0 0 48 48" fill="none" strokeWidth="1.3" stroke="currentColor" style={{ width: 32, height: 32 }}>
         <circle cx="24" cy="24" r="16" />
@@ -57,8 +57,8 @@ const BENEFITS = [
   {
     id: "portfolio",
     tag: "04",
-    headline: "Proof of Work.",
-    body: "Certifications wired directly into your portfolio. Real projects, real commits, real evidence.",
+    headline: "Proof of Work",
+    body: "Build a portfolio backed by real projects, Git commits, and deployable applications.",
     icon: (
       <svg viewBox="0 0 48 48" fill="none" strokeWidth="1.3" stroke="currentColor" style={{ width: 32, height: 32 }}>
         <rect x="10" y="8" width="28" height="34" rx="3" />
@@ -74,8 +74,8 @@ const BENEFITS = [
   {
     id: "talent",
     tag: "05",
-    headline: "We find your edge.",
-    body: "Psychometric talent mapping + mentor-led career nudges. Your strengths become strategy.",
+    headline: "Discover your edge.",
+    body: "Identify your strengths through guided mentorship and real-world exposure to Assure 100 percent Job in IT career..",
     icon: (
       <svg viewBox="0 0 48 48" fill="none" strokeWidth="1.3" stroke="currentColor" style={{ width: 32, height: 32 }}>
         <circle cx="24" cy="18" r="8" />
@@ -91,8 +91,8 @@ const BENEFITS = [
   {
     id: "infinite",
     tag: "06",
-    headline: "Career = Infinite",
-    body: "Active placement support across 4 distinct career paths. Not a placement cell — a perpetual launch pad.",
+    headline: "Career Without Limits",
+    body: "From learning to internships to real opportunities — a continuous engineering growth path.",
     icon: null, // Uses animated infinity SVG instead
     gridArea: "infinite",
     size: "large",
@@ -150,8 +150,6 @@ function BentoCard({ benefit }: { benefit: (typeof BENEFITS)[0] }) {
     return () => { tl.kill(); };
   }, [benefit.id]);
 
-  const isInfinite = benefit.id === "infinite";
-
   return (
     <div
       ref={cardRef}
@@ -164,7 +162,7 @@ function BentoCard({ benefit }: { benefit: (typeof BENEFITS)[0] }) {
 
         {/* Icon or infinity visual */}
         <div className="fb-icon-area">
-          {isInfinite ? (
+          {benefit.id === "infinite" ? (
             <svg viewBox="0 0 120 60" fill="none" style={{ width: "100%", maxWidth: 110, height: "auto" }}>
               {/* Static ghost */}
               <path
@@ -191,13 +189,7 @@ function BentoCard({ benefit }: { benefit: (typeof BENEFITS)[0] }) {
 
         {/* Text */}
         <div className="fb-text">
-          <h3 className="fb-headline">
-            {isInfinite ? (
-              <>Career = Infinite <span className="fb-inf-emoji">♾️</span></>
-            ) : (
-              benefit.headline
-            )}
-          </h3>
+          <h3 className="fb-headline">{benefit.headline}</h3>
           <p className="fb-body">{benefit.body}</p>
         </div>
 
@@ -261,6 +253,7 @@ export default function FeaturedBenefitsSection() {
         <span className="fb-eyebrow">Featured Benefits</span>
         <p className="fb-heading">
           The ecosystem,{" "}
+          <br />
           <em>not just<br />the school.</em>
         </p>
       </div>
