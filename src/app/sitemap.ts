@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-
+//sitemap.ts
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || 'https://lanositsolutions.com';
@@ -37,3 +37,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 }
+
