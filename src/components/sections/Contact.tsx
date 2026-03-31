@@ -10,6 +10,7 @@ function GhostInput({
   value,
   onChange,
   placeholder,
+  error,
 }: {
   id:          string;
   label:       string;
@@ -17,24 +18,27 @@ function GhostInput({
   value:       string;
   onChange:    (v: string) => void;
   placeholder: string;
+  error?:      string;
 }) {
   const [focused, setFocused] = useState(false);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-      <label
-        htmlFor={id}
-        style={{
-          fontSize:      "0.7rem",
-          fontWeight:    600,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color:         focused ? "var(--accent)" : "var(--fg-muted)",
-          transition:    "color 0.25s ease",
-        }}
-      >
-        {label}
-      </label>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <label
+          htmlFor={id}
+          style={{
+            fontSize:      "0.68rem",
+            fontWeight:    600,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color:         "var(--fg-muted)",
+          }}
+        >
+          {label}
+        </label>
+        {error && <span style={{ fontSize: "0.68rem", color: "var(--accent)" }}>{error}</span>}
+      </div>
 
       <input
         id={id}
@@ -47,18 +51,20 @@ function GhostInput({
         style={{
           background:   "transparent",
           border:       "none",
-          borderBottom: focused
-            ? "1.5px solid var(--accent)"
-            : "1.5px solid rgba(26,26,27,0.18)",
+          borderBottom: focused 
+            ? "1px solid var(--accent)"
+            : "1px solid rgba(26,26,27,0.18)",
+          borderRadius: 0,
           outline:      "none",
-          padding:      "0.65rem 0",
-          fontSize:     "1rem",
+          padding:      "0.55rem 0",
+          fontSize:     "0.9rem",
+          fontWeight:   400,
           color:        "var(--fg)",
           fontFamily:   "inherit",
           width:        "100%",
-          transition:   "border-color 0.25s ease",
+          transition:   "border-color 0.22s ease, box-shadow 0.22s ease",
           boxShadow:    focused
-            ? "0 4px 16px -6px rgba(229,64,79,0.28)"
+            ? "0 2px 0 -1px rgba(229,64,79,0.25)"
             : "none",
         }}
       />
@@ -68,16 +74,52 @@ function GhostInput({
 
 /* ─── Contact Section ────────────────────────────────────────── */
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", goal: "", email: "" });
+  const [form, setForm] = useState({ name: "", email: "", mobile: "", message: "" });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const set = (field: keyof typeof form) => (v: string) =>
+  const set = (field: keyof typeof form) => (v: string) => {
     setForm((f) => ({ ...f, [field]: v }));
+    setErrors((e) => ({ ...e, [field]: "" }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validate = () => {
+    const errs: { [key: string]: string } = {};
+    if (!form.name.trim()) errs.name = "Required";
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!form.email.trim()) errs.email = "Required";
+    else if (!EMAIL_RE.test(form.email)) errs.email = "Invalid email formatting";
+    if (!form.mobile.trim()) errs.mobile = "Required";
+    if (!form.message.trim()) errs.message = "Required";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.goal || !form.email) return;
-    setSubmitted(true);
+    if (!validate()) return;
+    
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        alert("Submission failed. Try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -268,34 +310,47 @@ export default function Contact() {
                 value={form.name}
                 onChange={set("name")}
                 placeholder="Ada Lovelace"
-              />
-              <GhostInput
-                id="contact-goal"
-                label="What's your goal?"
-                value={form.goal}
-                onChange={set("goal")}
-                placeholder="Launch an EdTech platform, modernise our stack…"
+                error={errors.name}
               />
               <GhostInput
                 id="contact-email"
-                label="Email"
+                label="Email Address"
                 type="email"
                 value={form.email}
                 onChange={set("email")}
                 placeholder="ada@example.com"
+                error={errors.email}
+              />
+              <GhostInput
+                id="contact-mobile"
+                label="Mobile Number"
+                type="tel"
+                value={form.mobile}
+                onChange={set("mobile")}
+                placeholder="+91 98765 43210"
+                error={errors.mobile}
+              />
+              <GhostInput
+                id="contact-goal"
+                label="What's your goal?"
+                value={form.message}
+                onChange={set("message")}
+                placeholder="Launch an EdTech platform, modernise our stack…"
+                error={errors.message}
               />
 
               {/* Submit CTA */}
               <div style={{ paddingTop: "0.5rem" }}>
                 <button
                   type="submit"
+                  disabled={loading}
                   style={{
                     display:      "inline-flex",
                     alignItems:   "center",
                     gap:          "0.65rem",
                     background:   "none",
                     border:       "none",
-                    cursor:       "pointer",
+                    cursor:       loading ? "not-allowed" : "pointer",
                     padding:      0,
                     fontFamily:   "inherit",
                     fontSize:     "1.05rem",
@@ -305,8 +360,8 @@ export default function Contact() {
                   }}
                   className="contact-submit"
                 >
-                  <span className="submit-text" style={{ transition: "color 0.2s ease" }}>
-                    Send message
+                  <span className="submit-text" style={{ transition: "color 0.2s ease", opacity: loading ? 0.7 : 1 }}>
+                    {loading ? "Sending..." : "Send message"}
                   </span>
                   <span
                     className="submit-arrow"

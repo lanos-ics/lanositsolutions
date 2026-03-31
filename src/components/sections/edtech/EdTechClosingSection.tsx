@@ -5,19 +5,11 @@ import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 /* ─── Types ───────────────────────────────────────────────────────── */
-type Tab = "enquiry" | "counselling" | "guidance";
-
 interface FormData {
   name: string;
   email: string;
   mobile: string;
   message: string;
-  fullProblem: string;
-  counsellingInterest: string;
-  guidanceCriteria: string;
-  cvFile: File | null;
-  marksheetFile: File | null;
-  linkedinUrl: string;
 }
 
 interface Errors {
@@ -25,53 +17,22 @@ interface Errors {
   email?: string;
   mobile?: string;
   message?: string;
-  fullProblem?: string;
 }
-
-/* ─── Tab config ──────────────────────────────────────────────────── */
-const TABS: { id: Tab; label: string; submit: string }[] = [
-  { id: "enquiry",     label: "Enquiry",     submit: "Send Enquiry"          },
-  { id: "counselling", label: "Counselling", submit: "Request Counselling"   },
-  { id: "guidance",    label: "Guidance",    submit: "Request Guidance"      },
-];
-
-const COUNSELLING_INTERESTS = [
-  "Full-Stack Development",
-  "Data Science & AI",
-  "UI/UX Design",
-  "Product Management",
-  "Cybersecurity",
-  "DevOps & Cloud",
-  "Other",
-];
-const GUIDANCE_CRITERIA = [
-  "Academic Performance Improvement",
-  "Career Transition Advice",
-  "Project Portfolio Review",
-  "Startup & Entrepreneurship",
-  "Internship Readiness",
-  "Other",
-];
 
 /* ─── Email regex ─────────────────────────────────────────────────── */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function EdTechClosingSection() {
   /* refs */
-  const leftRef       = useRef<HTMLDivElement>(null);
-  const formCardRef   = useRef<HTMLDivElement>(null);
-  const fieldsRef     = useRef<HTMLDivElement>(null);
-  const indicatorRef  = useRef<HTMLDivElement>(null);
-  const tabsBarRef    = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const formCardRef = useRef<HTMLDivElement>(null);
   const floatTweenRef = useRef<gsap.core.Tween | null>(null);
 
   /* state */
-  const [activeTab, setActiveTab] = useState<Tab>("enquiry");
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData]   = useState<FormData>({
-    name: "", email: "", mobile: "", message: "", fullProblem: "",
-    counsellingInterest: "", guidanceCriteria: "",
-    cvFile: null, marksheetFile: null, linkedinUrl: "",
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<FormData>({
+    name: "", email: "", mobile: "", message: "",
   });
   const [errors, setErrors] = useState<Errors>({});
 
@@ -118,98 +79,64 @@ export default function EdTechClosingSection() {
     });
   }, []);
 
-  /* ── Slide tab indicator ──────────────────────────────────────── */
-  const slideIndicator = useCallback((newTab: Tab) => {
-    if (!tabsBarRef.current || !indicatorRef.current) return;
-    const bar   = tabsBarRef.current;
-    const idx   = TABS.findIndex(t => t.id === newTab);
-    const btns  = bar.querySelectorAll<HTMLButtonElement>("[data-tab-btn]");
-    const btn   = btns[idx];
-    if (!btn) return;
-    const barRect = bar.getBoundingClientRect();
-    const btnRect = btn.getBoundingClientRect();
-    gsap.to(indicatorRef.current, {
-      x:        btnRect.left - barRect.left,
-      width:    btnRect.width,
-      duration: 0.3,
-      ease:     "power2.inOut",
-    });
-  }, []);
-
-  /* ── Init indicator on mount ──────────────────────────────────── */
-  useEffect(() => {
-    // small delay to wait for layout
-    const raf = requestAnimationFrame(() => slideIndicator("enquiry"));
-    return () => cancelAnimationFrame(raf);
-  }, [slideIndicator]);
-
-  /* ── Tab switch ───────────────────────────────────────────────── */
-  const handleTabSwitch = useCallback((newTab: Tab) => {
-    if (newTab === activeTab) return;
-    slideIndicator(newTab);
-    // pause float
-    floatTweenRef.current?.pause();
-
-    if (fieldsRef.current) {
-      gsap.to(fieldsRef.current, {
-        opacity: 0, y: 8, duration: 0.18, ease: "power1.in",
-        onComplete: () => {
-          setActiveTab(newTab);
-          setErrors({});
-          gsap.fromTo(
-            fieldsRef.current!,
-            { opacity: 0, y: 18 },
-            {
-              opacity: 1, y: 0, duration: 0.32, ease: "power2.out",
-              onComplete: () => void floatTweenRef.current?.resume(),
-            }
-          );
-        },
-      });
-    } else {
-      setActiveTab(newTab);
-    }
-  }, [activeTab, slideIndicator]);
-
   /* ── Input helpers ────────────────────────────────────────────── */
-  const set = (field: keyof FormData, value: string | File | null) =>
+  const set = (field: keyof FormData, value: string) =>
     setFormData(prev => ({ ...prev, [field]: value }));
 
   /* ── Validate ─────────────────────────────────────────────────── */
   const validate = (): boolean => {
     const e: Errors = {};
-    if (!formData.name.trim())  e.name   = "Name is required.";
-    if (!formData.email.trim()) e.email  = "Email is required.";
+    if (!formData.name.trim()) e.name = "Name is required.";
+    if (!formData.email.trim()) e.email = "Email is required.";
     else if (!EMAIL_RE.test(formData.email)) e.email = "Enter a valid email.";
     if (!formData.mobile.trim()) e.mobile = "Mobile number is required.";
-
-    if (activeTab === "enquiry" || activeTab === "counselling") {
-      if (!formData.message.trim()) e.message = "Please write a message.";
-    }
-    if (activeTab === "guidance") {
-      if (!formData.fullProblem.trim()) e.fullProblem = "Please describe your problem.";
-    }
+    if (!formData.message.trim()) e.message = "Please write a message.";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
   /* ── Submit ───────────────────────────────────────────────────── */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
-    setSubmitted(true);
-  };
 
-  const activeTabCfg = TABS.find(t => t.id === activeTab)!;
+    if (!validate()) return;
+
+    try {
+      setLoading(true);
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setFormData({ name: "", email: "", mobile: "", message: "" });
+      } else {
+        alert("Submission failed. Try again.");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section
       id="edtech-contact"
       className="ecs-section-wrap"
       style={{
-        position:      "relative",
-        padding:       "9rem clamp(1.75rem, 8vw, 9rem) 8rem",
-        overflow:      "hidden",
+        position: "relative",
+        padding: "9rem clamp(1.75rem, 8vw, 9rem) 8rem",
+        overflow: "hidden",
       }}
     >
       {/* Top rule */}
@@ -282,9 +209,9 @@ export default function EdTechClosingSection() {
           {/* Stats row */}
           <div className="ecs-stats">
             {[
-              { val: "8+",    label: "Tech Tracks"       },
-              { val: "7",     label: "Career Steps"      },
-              { val: "3",     label: "Outcome Paths"     },
+              { val: "8+", label: "Tech Tracks" },
+              { val: "7", label: "Career Steps" },
+              { val: "3", label: "Outcome Paths" },
               { val: "₹1Cr+", label: "Startup Milestone" },
             ].map(({ val, label }) => (
               <div key={label} className="ecs-stat">
@@ -307,43 +234,34 @@ export default function EdTechClosingSection() {
             }}>
               <span style={{ fontSize: "2.4rem" }}>✦</span>
               <h3 style={{ fontWeight: 300, fontSize: "1.4rem", letterSpacing: "-0.02em", margin: 0 }}>
-                {activeTab === "enquiry"
-                  ? "Enquiry received!"
-                  : activeTab === "counselling"
-                  ? "Counselling request sent!"
-                  : "Guidance request sent!"}
+                Enquiry received!
               </h3>
               <p style={{ fontSize: "0.85rem", color: "var(--fg-muted)", maxWidth: "28ch" }}>
                 Our team will get back to you within 24 hours.
               </p>
-              <button className="ecs-submit-btn" onClick={() => { setSubmitted(false); setFormData({ name:"",email:"",mobile:"",message:"",fullProblem:"",counsellingInterest:"",guidanceCriteria:"",cvFile:null,marksheetFile:null,linkedinUrl:"" }); }}>
+              <button
+                className="ecs-submit-btn"
+                onClick={() => {
+                  setSubmitted(false);
+                  setFormData({ name: "", email: "", mobile: "", message: "" });
+                }}
+              >
                 Submit another
               </button>
             </div>
           ) : (
             <>
-              {/* ── Segmented control ─────────────────────────── */}
-              <div ref={tabsBarRef} className="ecs-tabs-bar">
-                {/* sliding indicator */}
-                <div ref={indicatorRef} className="ecs-tab-indicator" />
-                {TABS.map(t => (
-                  <button
-                    key={t.id}
-                    data-tab-btn
-                    className={`ecs-tab-btn${activeTab === t.id ? " active" : ""}`}
-                    onClick={() => handleTabSwitch(t.id)}
-                    type="button"
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
+              {/* ── Form heading ──────────────────────────────── */}
+              <h3 style={{
+                fontSize: "1.8rem", fontWeight: 700, letterSpacing: "-0.02em",
+                color: "var(--fg)", margin: "0 0 1.5rem", textAlign: "center"
+              }}>
+                Send an Enquiry
+              </h3>
 
               {/* ── Fields ────────────────────────────────────── */}
               <form onSubmit={handleSubmit} noValidate>
-                <div ref={fieldsRef} className="ecs-fields">
-
-                  {/* ── Common: Name / Email / Mobile ─────────── */}
+                <div className="ecs-fields">
                   <Field label="Full Name" error={errors.name}>
                     <input
                       className="ecs-input" type="text" placeholder="Your name"
@@ -362,89 +280,23 @@ export default function EdTechClosingSection() {
                       value={formData.mobile} onChange={e => set("mobile", e.target.value)}
                     />
                   </Field>
-
-                  {/* ── Enquiry / Counselling: Message ────────── */}
-                  {(activeTab === "enquiry" || activeTab === "counselling") && (
-                    <Field label="Message" error={errors.message}>
-                      <textarea
-                        className="ecs-input ecs-textarea" placeholder="What would you like to know?"
-                        value={formData.message} onChange={e => set("message", e.target.value)}
-                        rows={3}
-                      />
-                    </Field>
-                  )}
-
-                  {/* ── Counselling extras ─────────────────────── */}
-                  {activeTab === "counselling" && (
-                    <>
-                      <Field label="Counselling Interest Area">
-                        <select
-                          className="ecs-input ecs-select"
-                          value={formData.counsellingInterest}
-                          onChange={e => set("counsellingInterest", e.target.value)}
-                        >
-                          <option value="">Select an area…</option>
-                          {COUNSELLING_INTERESTS.map(o => <option key={o}>{o}</option>)}
-                        </select>
-                      </Field>
-                      <Field label="Your CV">
-                        <FileDropZone
-                          accept=".pdf,.doc,.docx"
-                          file={formData.cvFile}
-                          onChange={f => set("cvFile", f)}
-                          hint="PDF or DOC · Max 5 MB"
-                        />
-                      </Field>
-                      <Field label="LinkedIn Profile URL">
-                        <input
-                          className="ecs-input" type="url" placeholder="linkedin.com/in/yourprofile"
-                          value={formData.linkedinUrl} onChange={e => set("linkedinUrl", e.target.value)}
-                        />
-                      </Field>
-                    </>
-                  )}
-
-                  {/* ── Guidance extras ────────────────────────── */}
-                  {activeTab === "guidance" && (
-                    <>
-                      <Field label="Describe Your Full Problem" error={errors.fullProblem}>
-                        <textarea
-                          className="ecs-input ecs-textarea" placeholder="Be as specific as possible…"
-                          value={formData.fullProblem} onChange={e => set("fullProblem", e.target.value)}
-                          rows={3}
-                        />
-                      </Field>
-                      <Field label="Guidance Criteria">
-                        <select
-                          className="ecs-input ecs-select"
-                          value={formData.guidanceCriteria}
-                          onChange={e => set("guidanceCriteria", e.target.value)}
-                        >
-                          <option value="">Select criteria…</option>
-                          {GUIDANCE_CRITERIA.map(o => <option key={o}>{o}</option>)}
-                        </select>
-                      </Field>
-                      <Field label="Last Sem Marksheet">
-                        <FileDropZone
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          file={formData.marksheetFile}
-                          onChange={f => set("marksheetFile", f)}
-                          hint="PDF or Image · Max 5 MB"
-                        />
-                      </Field>
-                      <Field label="LinkedIn Profile URL">
-                        <input
-                          className="ecs-input" type="url" placeholder="linkedin.com/in/yourprofile"
-                          value={formData.linkedinUrl} onChange={e => set("linkedinUrl", e.target.value)}
-                        />
-                      </Field>
-                    </>
-                  )}
+                  <Field label="Message" error={errors.message}>
+                    <textarea
+                      className="ecs-input ecs-textarea" placeholder="What would you like to know?"
+                      value={formData.message} onChange={e => set("message", e.target.value)}
+                      rows={3}
+                    />
+                  </Field>
                 </div>
 
                 {/* ── Submit ────────────────────────────────────── */}
-                <button type="submit" className="ecs-submit-btn" style={{ marginTop: "1.75rem", width: "100%" }}>
-                  {activeTabCfg.submit}
+                <button
+                  type="submit"
+                  className="ecs-submit-btn"
+                  style={{ marginTop: "1.75rem", width: "100%" }}
+                  disabled={loading}
+                >
+                  {loading ? "Sending..." : "Send Enquiry"}
                   <span className="ecs-submit-arrow">↗</span>
                 </button>
               </form>
@@ -461,8 +313,6 @@ export default function EdTechClosingSection() {
         </div>
       </div>
 
-      {/* ── Scoped styles ──────────────────────────────────────────── */}
-      
     </section>
   );
 }
@@ -481,32 +331,6 @@ function Field({
       <label className="ecs-label">{label}</label>
       {children}
       {error && <span className="ecs-error">{error}</span>}
-    </div>
-  );
-}
-
-function FileDropZone({
-  accept, file, onChange, hint,
-}: {
-  accept: string;
-  file: File | null;
-  onChange: (f: File | null) => void;
-  hint: string;
-}) {
-  return (
-    <div className="ecs-file-zone">
-      <input
-        type="file"
-        accept={accept}
-        onChange={e => onChange(e.target.files?.[0] ?? null)}
-      />
-      <span className="ecs-file-icon">↑</span>
-      <div style={{ overflow: "hidden" }}>
-        <p className="ecs-file-name">
-          {file ? file.name : "Click or drag to upload"}
-        </p>
-        <p className="ecs-file-hint">{hint}</p>
-      </div>
     </div>
   );
 }
