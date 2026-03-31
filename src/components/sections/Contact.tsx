@@ -416,7 +416,7 @@ export default function Contact() {
       >
         <iframe
           title="Lanos IT Solutions — Sagar Office"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.0!2d78.79311920!3d23.85161470!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDUxJzA1LjgiTiA3OMKwNDcnMzUuMiJF!5e0!3m2!1sen!2sin!4v1708000000000!5m2!1sen!2sin"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3649.070936081933!2d78.79311919999999!3d23.8516147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3978d1a4df0cf14f%3A0x6e1342daf268b94e!2sLanos%20It%20Solutions!5e0!3m2!1sen!2sin!4v1774940280999!5m2!1sen!2sin"
           width="100%"
           height="100%"
           style={{ border: 0, display: "block", filter: "grayscale(0.2) contrast(1.02)" }}
