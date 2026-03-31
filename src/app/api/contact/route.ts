@@ -1,11 +1,8 @@
 import https from "https";
 
 export async function POST(req: Request) {
-    console.log("API HIT 🚀");
-
     try {
         const body = await req.json();
-        console.log("BODY:", body);
 
         const urlString = process.env.GOOGLE_SCRIPT_URL;
 
