@@ -1,0 +1,164 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { CATEGORY_SLUGS, CATEGORY_LABELS } from '@/lib/blog/types';
+import type { BlogCategory } from '@/lib/blog/types';
+
+export default function NewBlogPage() {
+  const router = useRouter();
+  const [form, setForm] = useState({
+    title: '', slug: '', category: 'lanos-edtech' as BlogCategory,
+    excerpt: '', content: '', coverImage: '', authorName: '', authorRole: '', authorBio: '',
+    featured: false, tags: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [preview, setPreview] = useState(false);
+
+  const autoSlug = (title: string) =>
+    title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 80);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      ...(name === 'title' && !prev.slug ? { slug: autoSlug(value) } : {}),
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (!form.title || !form.slug || !form.content || !form.authorName) {
+      setError('Title, slug, content, and author name are required.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/admin/blogs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: form.title, slug: form.slug, category: form.category,
+          excerpt: form.excerpt, content: form.content, coverImage: form.coverImage,
+          author: { name: form.authorName, role: form.authorRole, bio: form.authorBio },
+          featured: form.featured,
+          tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error ?? 'Failed to create post.');
+        return;
+      }
+      router.push('/admin/blog');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const inputStyle: React.CSSProperties = { width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1.5px solid rgba(26,26,27,0.12)', background: 'var(--bg)', fontSize: '0.9rem', fontFamily: 'inherit', color: 'var(--fg)', outline: 'none', boxSizing: 'border-box' };
+  const labelStyle: React.CSSProperties = { fontSize: '0.82rem', fontWeight: 600, color: 'var(--fg)', marginBottom: '0.35rem', display: 'block' };
+
+  return (
+    <div style={{ minHeight: '100vh', padding: '2rem clamp(1.5rem, 6vw, 5rem)' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem', borderBottom: '1px solid rgba(26,26,27,0.08)', paddingBottom: '1.5rem' }}>
+        <Link href="/admin/blog" style={{ color: 'var(--fg-muted)', textDecoration: 'none', fontSize: '0.875rem' }}>← Back to Admin</Link>
+        <span style={{ color: 'rgba(26,26,27,0.2)' }}>|</span>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.03em' }}>New Blog Post</h1>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', alignItems: 'start' }}>
+          {/* Main fields */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div>
+              <label style={labelStyle}>Title *</label>
+              <input name="title" value={form.title} onChange={handleChange} placeholder="Your blog title" required style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Slug *</label>
+              <input name="slug" value={form.slug} onChange={handleChange} placeholder="url-friendly-slug" required style={inputStyle} />
+              <p style={{ fontSize: '0.75rem', color: 'var(--fg-muted)', marginTop: '0.3rem' }}>URL: /blog/{form.slug || 'your-slug'}</p>
+            </div>
+            <div>
+              <label style={labelStyle}>Excerpt</label>
+              <textarea name="excerpt" value={form.excerpt} onChange={handleChange} rows={2} placeholder="A short summary shown in listings…" style={{ ...inputStyle, resize: 'vertical' }} />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>Content (Markdown) *</label>
+                <button type="button" onClick={() => setPreview(p => !p)} style={{ fontSize: '0.78rem', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>
+                  {preview ? '← Edit' : '👁 Preview'}
+                </button>
+              </div>
+              {preview ? (
+                <div className="blog-content" style={{ padding: '1rem', border: '1.5px solid rgba(26,26,27,0.12)', borderRadius: '10px', minHeight: '400px', maxWidth: '100%' }}
+                  dangerouslySetInnerHTML={{ __html: form.content.replace(/\n/g, '<br/>') }} />
+              ) : (
+                <textarea name="content" value={form.content} onChange={handleChange} rows={18} required placeholder="# Your Post Title&#10;&#10;Write your content in markdown…" style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace', fontSize: '0.875rem' }} />
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar fields */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'sticky', top: 'calc(var(--nav-h) + 1.5rem)' }}>
+            <div style={{ padding: '1.5rem', borderRadius: '14px', border: '1px solid rgba(26,26,27,0.08)', background: 'rgba(26,26,27,0.02)', display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+              <div>
+                <label style={labelStyle}>Category *</label>
+                <select name="category" value={form.category} onChange={handleChange} style={{ ...inputStyle }}>
+                  {CATEGORY_SLUGS.map(k => <option key={k} value={k}>{CATEGORY_LABELS[k]}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Cover Image URL</label>
+                <input name="coverImage" value={form.coverImage} onChange={handleChange} placeholder="/blog/covers/your-image.jpg" style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Tags (comma separated)</label>
+                <input name="tags" value={form.tags} onChange={handleChange} placeholder="nextjs, ai, tutorial" style={inputStyle} />
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500 }}>
+                <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange} style={{ width: '16px', height: '16px', accentColor: 'var(--accent)' }} />
+                Featured post
+              </label>
+            </div>
+
+            <div style={{ padding: '1.5rem', borderRadius: '14px', border: '1px solid rgba(26,26,27,0.08)', background: 'rgba(26,26,27,0.02)', display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+              <p style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--fg-muted)', margin: 0, opacity: 0.7 }}>Author</p>
+              <div>
+                <label style={labelStyle}>Name *</label>
+                <input name="authorName" value={form.authorName} onChange={handleChange} placeholder="Author name" required style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Role</label>
+                <input name="authorRole" value={form.authorRole} onChange={handleChange} placeholder="e.g. Founder, Lanos" style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Bio</label>
+                <textarea name="authorBio" value={form.authorBio} onChange={handleChange} rows={2} placeholder="Short author bio" style={{ ...inputStyle, resize: 'vertical' }} />
+              </div>
+            </div>
+
+            {error && <p style={{ color: 'var(--accent)', fontSize: '0.875rem', padding: '0.75rem 1rem', background: 'rgba(229,64,79,0.06)', borderRadius: '8px', border: '1px solid rgba(229,64,79,0.2)' }}>{error}</p>}
+
+            <button type="submit" disabled={submitting} style={{ padding: '0.85rem', borderRadius: '99px', background: 'var(--fg)', color: 'var(--bg)', fontSize: '0.9rem', fontWeight: 700, border: 'none', cursor: submitting ? 'wait' : 'pointer', fontFamily: 'inherit', transition: 'opacity 0.2s' }}>
+              {submitting ? 'Publishing…' : 'Publish Post →'}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <style>{`
+        @media (max-width: 768px) {
+          form > div { grid-template-columns: 1fr !important; }
+          form > div > div:last-child { position: static !important; }
+        }
+      `}</style>
+    </div>
+  );
+}

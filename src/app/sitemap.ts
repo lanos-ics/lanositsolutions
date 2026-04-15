@@ -1,8 +1,18 @@
 import { MetadataRoute } from 'next';
+import { getAllBlogs } from '@/lib/blog/api';
+
 //sitemap.ts
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || 'https://lanositsolutions.com';
+
+  const blogs = getAllBlogs();
+  const blogEntries: MetadataRoute.Sitemap = blogs.map(b => ({
+    url: `${baseUrl}/blog/${b.slug}`,
+    lastModified: new Date(b.updatedAt),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
 
   return [
     {
@@ -10,6 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/edtech`,
@@ -35,6 +51,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.5,
     },
+    ...blogEntries,
   ];
 }
+
 
