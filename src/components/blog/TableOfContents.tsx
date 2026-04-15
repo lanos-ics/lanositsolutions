@@ -45,7 +45,6 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
                 fontSize: item.level === 1 ? '0.82rem' : '0.78rem',
                 fontWeight: item.id === active ? 600 : 400,
                 color: item.id === active ? 'var(--accent)' : 'var(--fg-muted)',
-                paddingLeft: `${(item.level - 1) * 0.75}rem`,
                 paddingTop: '0.3rem',
                 paddingBottom: '0.3rem',
                 textDecoration: 'none',
