@@ -1,8 +1,16 @@
 import { MetadataRoute } from 'next';
+import { getAllTrackSlugs } from '@/lib/courseData';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || 'https://lanositsolutions.com';
+
+  const trackEntries: MetadataRoute.Sitemap = getAllTrackSlugs().map((slug) => ({
+    url: `${baseUrl}/edtech/courses/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
 
   return [
     {
@@ -35,5 +43,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.5,
     },
+    ...trackEntries,
   ];
 }
