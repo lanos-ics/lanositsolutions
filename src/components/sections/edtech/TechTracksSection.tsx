@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
@@ -8,6 +9,7 @@ interface Track {
   num: string;
   label: string;
   sub: string;
+  slug?: string;
   isNew?: boolean;
   isResearch?: boolean;
 }
@@ -38,11 +40,13 @@ const GROUPS: Group[] = [
         num: "01",
         label: "Programming Foundations",
         sub: "Start from zero and build strong logical and coding fundamentals.",
+        slug: "programming-foundations",
       },
       {
         num: "06",
         label: "Programming Mastery",
         sub: "Master languages like Java, Python, C++, and system-level thinking.",
+        slug: "programming-mastery",
       },
     ],
   },
@@ -59,21 +63,25 @@ const GROUPS: Group[] = [
         num: "02",
         label: "Web Design & UI Systems",
         sub: "Design modern, responsive interfaces with real-world design principles.",
+        slug: "web-design-ui-systems",
       },
       {
         num: "03",
         label: "Frontend Engineering",
         sub: "Build interactive, scalable user interfaces using modern frameworks.",
+        slug: "frontend-engineering",
       },
       {
         num: "04",
         label: "Backend Systems",
         sub: "Develop secure, scalable server-side applications and architectures.",
+        slug: "backend-engineering",
       },
       {
         num: "05",
         label: "API & System Integration",
         sub: "Design and build REST APIs powering real-world applications.",
+        slug: "api-system-integration",
       },
     ],
   },
@@ -91,6 +99,7 @@ const GROUPS: Group[] = [
         label: "Data Science & Analytics",
         sub: "Analyze data, build models, and extract actionable business insights.",
         isNew: true,
+        slug: "data-science-analytics",
       },
       {
         num: "07",
@@ -124,6 +133,20 @@ const GROUPS: Group[] = [
         sub: "Explore brain-computer interfaces and next-generation neurotechnology.",
         isResearch: true,
       },
+      {
+        num: "14",
+        label: "AI & Mathematics",
+        sub: "Deep mathematical foundations for AI and machine learning systems.",
+        isNew: true,
+        slug: "ai-mathematics",
+      },
+      {
+        num: "15",
+        label: "Mobile Development",
+        sub: "Build native and cross-platform mobile applications.",
+        isNew: true,
+        slug: "mobile-development",
+      },
     ],
   },
   {
@@ -139,11 +162,13 @@ const GROUPS: Group[] = [
         num: "11",
         label: "CAD & Design Software",
         sub: "Work with industry tools like AutoCAD, Revit, SketchUp and design systems.",
+        slug: "tools",
       },
       {
         num: "13",
         label: "Digital Accounting & MS Office 360",
         sub: "Master professional productivity and digital finance tools for the modern workplace.",
+        slug: "tools",
       },
     ],
   },
@@ -283,71 +308,88 @@ export default function TechTracksSection() {
 
             {/* Cards row */}
             <div className="tts-row">
-              {group.tracks.map((track) => (
-                <div key={track.num} className="tts-card">
-                  {/* Top accent bar */}
-                  <div
-                    className="tts-topbar"
-                    style={{ background: group.accent }}
-                  />
+              {group.tracks.map((track) => {
+                const cardContent = (
+                  <>
+                    {/* Top accent bar */}
+                    <div
+                      className="tts-topbar"
+                      style={{ background: group.accent }}
+                    />
 
-                  {/* Glow */}
-                  <div
-                    className="tts-glow"
-                    style={{
-                      background: `radial-gradient(ellipse at 10% 0%, ${group.accentGlow} 0%, transparent 70%)`,
-                    }}
-                  />
+                    {/* Glow */}
+                    <div
+                      className="tts-glow"
+                      style={{
+                        background: `radial-gradient(ellipse at 10% 0%, ${group.accentGlow} 0%, transparent 70%)`,
+                      }}
+                    />
 
-                  {/* Card body */}
-                  <div className="tts-card-body">
-                    {/* Number + badges row */}
-                    <div className="tts-meta-row">
-                      <span
-                        className="tts-num"
+                    {/* Card body */}
+                    <div className="tts-card-body">
+                      {/* Number + badges row */}
+                      <div className="tts-meta-row">
+                        <span
+                          className="tts-num"
+                          style={{ color: group.accent }}
+                        >
+                          ⚔️ {track.num}
+                        </span>
+                        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+                          {/* Category tag */}
+                          <span
+                            className="tts-tag"
+                            style={{
+                              background: group.accentBg,
+                              color: group.accent,
+                              border: `1px solid ${group.accentBorder}`,
+                            }}
+                          >
+                            {group.label}
+                          </span>
+                          {/* NEW badge */}
+                          {track.isNew && (
+                            <span className="tts-badge tts-badge--new">NEW</span>
+                          )}
+                          {/* RESEARCH badge */}
+                          {track.isResearch && (
+                            <span className="tts-badge tts-badge--research">Research</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Title */}
+                      <p className="tts-label">{track.label}</p>
+
+                      {/* Description */}
+                      <p className="tts-sub">{track.sub}</p>
+
+                      {/* Arrow */}
+                      <div
+                        className="tts-arrow"
                         style={{ color: group.accent }}
                       >
-                        ⚔️ {track.num}
-                      </span>
-                      <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
-                        {/* Category tag */}
-                        <span
-                          className="tts-tag"
-                          style={{
-                            background: group.accentBg,
-                            color: group.accent,
-                            border: `1px solid ${group.accentBorder}`,
-                          }}
-                        >
-                          {group.label}
-                        </span>
-                        {/* NEW badge */}
-                        {track.isNew && (
-                          <span className="tts-badge tts-badge--new">NEW</span>
-                        )}
-                        {/* RESEARCH badge */}
-                        {track.isResearch && (
-                          <span className="tts-badge tts-badge--research">Research</span>
-                        )}
+                        ↗
                       </div>
                     </div>
+                  </>
+                );
 
-                    {/* Title */}
-                    <p className="tts-label">{track.label}</p>
-
-                    {/* Description */}
-                    <p className="tts-sub">{track.sub}</p>
-
-                    {/* Arrow */}
-                    <div
-                      className="tts-arrow"
-                      style={{ color: group.accent }}
-                    >
-                      ↗
-                    </div>
+                return track.slug ? (
+                  <Link
+                    key={track.num}
+                    href={`/edtech/courses/${track.slug}`}
+                    className="tts-card"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    {cardContent}
+                  </Link>
+                ) : (
+                  <div key={track.num} className="tts-card">
+                    {cardContent}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         ))}

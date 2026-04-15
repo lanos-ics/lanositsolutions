@@ -6,6 +6,7 @@ import { gsap } from "@/lib/gsap";
 import Image from "next/image";
 
 const NAV_LINKS = [
+  { label: "Courses", href: "/edtech/courses"},
   { label: "EdTech",    href: "/edtech" },
   { label: "Solutions", href: "/solutions" },
   { label: "R&D",       href: "/research" },
