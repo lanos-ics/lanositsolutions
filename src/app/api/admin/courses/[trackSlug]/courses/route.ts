@@ -5,7 +5,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tra
   try {
     const { trackSlug } = await params;
     const body = await req.json();
-    const { slug, title, description, icon, originalPrice, price, syllabusUrl, badge } = body;
+    const { slug, title, description, briefDescription, icon, originalPrice, price, syllabusUrl, badge } = body;
 
     if (!slug || !title || !description) {
       return NextResponse.json({ error: 'slug, title, and description are required' }, { status: 400 });
@@ -15,6 +15,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tra
       slug,
       title,
       description,
+      briefDescription: briefDescription || undefined,
       icon: icon ?? '📘',
       originalPrice: Number(originalPrice) || 0,
       price: Number(price) || 0,

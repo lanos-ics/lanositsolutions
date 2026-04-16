@@ -8,6 +8,7 @@ interface Course {
   slug: string;
   title: string;
   description: string;
+  briefDescription?: string;
   icon: string;
   originalPrice: number;
   price: number;

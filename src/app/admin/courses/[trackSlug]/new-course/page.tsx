@@ -9,7 +9,7 @@ export default function NewCoursePage({ params }: { params: Promise<{ trackSlug:
   const [trackSlug, setTrackSlug] = useState('');
   const [trackLabel, setTrackLabel] = useState('');
   const [form, setForm] = useState({
-    title: '', slug: '', description: '', icon: '📘',
+    title: '', slug: '', description: '', briefDescription: '', icon: '📘',
     originalPrice: '', price: '', syllabusUrl: '', badge: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -55,6 +55,7 @@ export default function NewCoursePage({ params }: { params: Promise<{ trackSlug:
           slug: form.slug,
           title: form.title,
           description: form.description,
+          briefDescription: form.briefDescription,
           icon: form.icon,
           originalPrice: Number(form.originalPrice) || 0,
           price: Number(form.price) || 0,
@@ -90,7 +91,9 @@ export default function NewCoursePage({ params }: { params: Promise<{ trackSlug:
           <label style={labelStyle}>Slug *</label>
           <input name="slug" value={form.slug} onChange={handleChange} placeholder="reactjs" required style={inputStyle} />
         </div>
-        <div><label style={labelStyle}>Description *</label><textarea name="description" value={form.description} onChange={handleChange} rows={3} required placeholder="What will students learn?" style={{ ...inputStyle, resize: 'vertical' }} /></div>
+        <div><label style={labelStyle}>Description (Card Subtitle) *</label><textarea name="description" value={form.description} onChange={handleChange} rows={2} required placeholder="Short 1-line description" style={{ ...inputStyle, resize: 'vertical' }} /></div>
+        
+        <div><label style={labelStyle}>Brief Description (Detailed Course Page)</label><textarea name="briefDescription" value={form.briefDescription} onChange={handleChange} rows={4} placeholder="Expanded description for the dedicated course page..." style={{ ...inputStyle, resize: 'vertical' }} /></div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div><label style={labelStyle}>Icon (Emoji)</label><input name="icon" value={form.icon} onChange={handleChange} style={inputStyle} /></div>

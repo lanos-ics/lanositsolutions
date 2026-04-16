@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Course, Track } from "@/lib/courseData";
 import { formatPrice } from "@/lib/courseData";
 
@@ -36,7 +37,8 @@ export default function CourseCard({ course, track }: CourseCardProps) {
   );
 
   return (
-    <div className="cc-card">
+    <div className="cc-card" style={{ position: "relative" }}>
+      <Link href={`/edtech/courses/${track.slug}/${course.slug}`} style={{ position: "absolute", inset: 0, zIndex: 1 }} aria-label={`View ${course.title} details`} />
       {/* Top accent bar */}
       <div
         className="cc-topbar"
@@ -100,7 +102,7 @@ export default function CourseCard({ course, track }: CourseCardProps) {
         </div>
 
         {/* CTAs */}
-        <div className="cc-cta-row">
+        <div className="cc-cta-row" style={{ position: "relative", zIndex: 10 }}>
           <a
             href={course.syllabusUrl}
             className="cc-cta cc-cta--outline"
@@ -126,7 +128,7 @@ export default function CourseCard({ course, track }: CourseCardProps) {
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Syllabus
+            Download Syllabus
           </a>
           <a
             href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919XXXXXXXXX'}?text=${encodeURIComponent(`Hi, I'm interested in buying the "${course.title}" course (₹${course.price.toLocaleString('en-IN')}). Please share the details.`)}`}

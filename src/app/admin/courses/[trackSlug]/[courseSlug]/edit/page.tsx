@@ -8,6 +8,7 @@ interface Course {
   slug: string;
   title: string;
   description: string;
+  briefDescription?: string;
   icon: string;
   originalPrice: number;
   price: number;
@@ -27,7 +28,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ trackSlug
   const [courseSlug, setCourseSlug] = useState('');
   const [trackLabel, setTrackLabel] = useState('');
   const [form, setForm] = useState({
-    title: '', slug: '', description: '', icon: '📘',
+    title: '', slug: '', description: '', briefDescription: '', icon: '📘',
     originalPrice: '', price: '', syllabusUrl: '', badge: '',
   });
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ trackSlug
         title: course.title,
         slug: course.slug,
         description: course.description,
+        briefDescription: course.briefDescription || '',
         icon: course.icon,
         originalPrice: String(course.originalPrice),
         price: String(course.price),
@@ -78,6 +80,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ trackSlug
           slug: form.slug,
           title: form.title,
           description: form.description,
+          briefDescription: form.briefDescription,
           icon: form.icon,
           originalPrice: Number(form.originalPrice) || 0,
           price: Number(form.price) || 0,
@@ -113,7 +116,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ trackSlug
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <div><label style={labelStyle}>Course Title *</label><input name="title" value={form.title} onChange={handleChange} required style={inputStyle} /></div>
         <div><label style={labelStyle}>Slug *</label><input name="slug" value={form.slug} onChange={handleChange} required style={inputStyle} /></div>
-        <div><label style={labelStyle}>Description *</label><textarea name="description" value={form.description} onChange={handleChange} rows={3} required style={{ ...inputStyle, resize: 'vertical' }} /></div>
+        <div><label style={labelStyle}>Description (Card Subtitle) *</label><textarea name="description" value={form.description} onChange={handleChange} rows={2} required style={{ ...inputStyle, resize: 'vertical' }} /></div>
+        <div><label style={labelStyle}>Brief Description (Detailed Course Page)</label><textarea name="briefDescription" value={form.briefDescription} onChange={handleChange} rows={4} style={{ ...inputStyle, resize: 'vertical' }} /></div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div><label style={labelStyle}>Icon (Emoji)</label><input name="icon" value={form.icon} onChange={handleChange} style={inputStyle} /></div>

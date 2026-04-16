@@ -13,6 +13,7 @@ export async function PUT(
     if (body.originalPrice !== undefined) body.originalPrice = Number(body.originalPrice);
     if (body.price !== undefined) body.price = Number(body.price);
     if (body.badge === '') body.badge = undefined;
+    if (body.briefDescription === '') body.briefDescription = undefined;
 
     const course = updateCourse(trackSlug, courseSlug, body);
     return NextResponse.json(course);
