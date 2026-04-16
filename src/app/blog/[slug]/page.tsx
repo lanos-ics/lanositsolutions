@@ -116,8 +116,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             {/* Tags */}
             {blog.tags && blog.tags.length > 0 && (
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(26,26,27,0.08)' }}>
-                {blog.tags.map(t => (
-                  <span key={t} style={{ padding: '0.25rem 0.8rem', borderRadius: '99px', background: 'rgba(26,26,27,0.05)', fontSize: '0.78rem', fontWeight: 500, color: 'var(--fg-muted)', border: '1px solid rgba(26,26,27,0.08)' }}>#{t}</span>
+                {blog.tags.map((t, i) => (
+                  <span key={`${t}-${i}`} style={{ padding: '0.25rem 0.8rem', borderRadius: '99px', background: 'rgba(26,26,27,0.05)', fontSize: '0.78rem', fontWeight: 500, color: 'var(--fg-muted)', border: '1px solid rgba(26,26,27,0.08)' }}>#{t}</span>
                 ))}
               </div>
             )}
