@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getTrackBySlug, getAllTrackSlugs } from "@/lib/courseData";
+import { getTrackBySlug, getAllTrackSlugs } from "@/lib/course/api";
 import TrackPage from "@/components/sections/courses/TrackPage";
 import "./courses.css";
 

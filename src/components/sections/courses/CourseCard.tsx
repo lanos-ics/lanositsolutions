@@ -129,11 +129,13 @@ export default function CourseCard({ course, track }: CourseCardProps) {
             Syllabus
           </a>
           <a
-            href="#"
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919XXXXXXXXX'}?text=${encodeURIComponent(`Hi, I'm interested in buying the "${course.title}" course (₹${course.price.toLocaleString('en-IN')}). Please share the details.`)}`}
             className="cc-cta cc-cta--solid"
             style={{ background: track.accent }}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Enroll Now
+            Buy Now
             <span className="cc-cta-arrow">↗</span>
           </a>
         </div>

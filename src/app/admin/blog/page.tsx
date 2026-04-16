@@ -59,7 +59,13 @@ export default function AdminBlogPage() {
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.2rem' }}>Blog Admin</h1>
           <p style={{ fontSize: '0.875rem', color: 'var(--fg-muted)' }}>Manage all blog posts</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Link
+            href="/admin/courses"
+            style={{ padding: '0.65rem 1.25rem', borderRadius: '99px', border: '1.5px solid rgba(26,26,27,0.12)', color: 'var(--fg-muted)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', transition: 'all 0.2s' }}
+          >
+            📚 Courses Admin
+          </Link>
           <Link
             href="/admin/blog/new"
             className="admin-btn-primary"

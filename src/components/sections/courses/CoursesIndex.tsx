@@ -3,9 +3,13 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { TRACKS } from "@/lib/courseData";
+import type { Track } from "@/lib/courseData";
 
-export default function CoursesIndex() {
+interface CoursesIndexProps {
+  tracks: Track[];
+}
+
+export default function CoursesIndex({ tracks }: CoursesIndexProps) {
   const headRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -85,7 +89,7 @@ export default function CoursesIndex() {
         </h1>
 
         <p className="ci-animate ci-description">
-          {TRACKS.length} structured learning paths covering programming,
+          {tracks.length} structured learning paths covering programming,
           web development, data science, tools, and more. Each track is designed
           to map to a real-world career outcome.
         </p>
@@ -93,7 +97,7 @@ export default function CoursesIndex() {
 
       {/* ── Grid ── */}
       <div ref={gridRef} className="ci-grid">
-        {TRACKS.map((track) => {
+        {tracks.map((track) => {
           const courseCount = track.courses.length;
 
           return (

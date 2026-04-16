@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getAllTracks } from "@/lib/course/api";
 import CoursesIndex from "@/components/sections/courses/CoursesIndex";
 import "../edtech.css";
 
@@ -9,6 +10,9 @@ export const metadata: Metadata = {
   keywords: ["courses", "EdTech", "Lanos", "programming", "web development", "data science"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default function CoursesPage() {
-  return <CoursesIndex />;
+  const tracks = getAllTracks();
+  return <CoursesIndex tracks={tracks} />;
 }
