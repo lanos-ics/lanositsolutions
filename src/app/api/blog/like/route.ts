@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const result = toggleLike(slug, sessionId);
+    const result = await toggleLike(slug, sessionId);
     return NextResponse.json(result);
   } catch (err) {
     console.error(err);

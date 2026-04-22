@@ -15,7 +15,7 @@ export async function PUT(
     if (body.badge === '') body.badge = undefined;
     if (body.briefDescription === '') body.briefDescription = undefined;
 
-    const course = updateCourse(trackSlug, courseSlug, body);
+    const course = await updateCourse(trackSlug, courseSlug, body);
     return NextResponse.json(course);
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Internal server error';
@@ -29,7 +29,7 @@ export async function DELETE(
 ) {
   try {
     const { trackSlug, courseSlug } = await params;
-    deleteCourse(trackSlug, courseSlug);
+    await deleteCourse(trackSlug, courseSlug);
     return NextResponse.json({ ok: true });
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Internal server error';

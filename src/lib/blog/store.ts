@@ -1,85 +1,148 @@
-import path from 'path';
-import fs from 'fs';
-import type { Blog, BlogStore, Comment } from './types';
+import { prisma } from '@/lib/prisma';
+import type { Blog, Comment } from './types';
+import type { Prisma } from '@/generated/prisma/client';
 
-const DATA_PATH = path.join(process.cwd(), 'src/lib/blog/data.json');
+const blogInclude = {
+  _count: { select: { likes: true } },
+  comments: { orderBy: { createdAt: 'desc' as const } },
+} as const;
 
-function readStore(): BlogStore {
-  const raw = fs.readFileSync(DATA_PATH, 'utf-8');
-  return JSON.parse(raw) as BlogStore;
+function mapBlogRow(row: {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  author: unknown;
+  featured: boolean;
+  tags: string[];
+  keywords: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  _count?: { likes: number };
+  likes?: { sessionId: string }[];
+  comments?: { id: string; name: string; message: string; createdAt: Date }[];
+}): Blog {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    category: row.category as Blog['category'],
+    excerpt: row.excerpt,
+    content: row.content,
+    coverImage: row.coverImage,
+    author: row.author as Blog['author'],
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+    featured: row.featured,
+    tags: row.tags ?? [],
+    keywords: row.keywords ?? [],
+    likes: row._count?.likes ?? row.likes?.length ?? 0,
+    likedBy: row.likes?.map((l) => l.sessionId) ?? [],
+    comments: (row.comments ?? []).map((c): Comment => ({
+      id: c.id,
+      blogSlug: row.slug,
+      name: c.name,
+      message: c.message,
+      createdAt: c.createdAt.toISOString(),
+    })),
+  };
 }
 
-function writeStore(store: BlogStore): void {
-  fs.writeFileSync(DATA_PATH, JSON.stringify(store, null, 2), 'utf-8');
-}
-
-export function toggleLike(slug: string, sessionId: string): { likes: number; liked: boolean } {
-  const store = readStore();
-  const blog = store.blogs.find((b) => b.slug === slug);
+export async function toggleLike(slug: string, sessionId: string): Promise<{ likes: number; liked: boolean }> {
+  const blog = await prisma.blog.findUnique({ where: { slug }, select: { id: true } });
   if (!blog) throw new Error('Blog not found');
 
-  const alreadyLiked = blog.likedBy.includes(sessionId);
-  if (alreadyLiked) {
-    blog.likedBy = blog.likedBy.filter((id) => id !== sessionId);
-    blog.likes = Math.max(0, blog.likes - 1);
+  const existing = await prisma.like.findUnique({
+    where: { blogId_sessionId: { blogId: blog.id, sessionId } },
+  });
+
+  if (existing) {
+    await prisma.like.delete({ where: { blogId_sessionId: { blogId: blog.id, sessionId } } });
   } else {
-    blog.likedBy.push(sessionId);
-    blog.likes += 1;
+    await prisma.like.create({ data: { blogId: blog.id, sessionId } });
   }
-  writeStore(store);
-  return { likes: blog.likes, liked: !alreadyLiked };
+
+  const likes = await prisma.like.count({ where: { blogId: blog.id } });
+  return { likes, liked: !existing };
 }
 
-export function addComment(slug: string, name: string, message: string): Comment {
-  const store = readStore();
-  const blog = store.blogs.find((b) => b.slug === slug);
+export async function addComment(slug: string, name: string, message: string): Promise<Comment> {
+  const blog = await prisma.blog.findUnique({ where: { slug }, select: { id: true } });
   if (!blog) throw new Error('Blog not found');
 
-  const comment: Comment = {
-    id: `c${Date.now()}`,
+  const row = await prisma.comment.create({
+    data: { blogId: blog.id, name: name.trim(), message: message.trim() },
+  });
+
+  return {
+    id: row.id,
     blogSlug: slug,
-    name: name.trim(),
-    message: message.trim(),
-    createdAt: new Date().toISOString(),
+    name: row.name,
+    message: row.message,
+    createdAt: row.createdAt.toISOString(),
   };
-  blog.comments.push(comment);
-  writeStore(store);
-  return comment;
 }
 
-export function getComments(slug: string): Comment[] {
-  const store = readStore();
-  const blog = store.blogs.find((b) => b.slug === slug);
-  return blog?.comments ?? [];
+export async function getComments(slug: string): Promise<Comment[]> {
+  const blog = await prisma.blog.findUnique({
+    where: { slug },
+    select: {
+      slug: true,
+      comments: { orderBy: { createdAt: 'desc' } },
+    },
+  });
+  if (!blog) return [];
+  return blog.comments.map((c) => ({
+    id: c.id,
+    blogSlug: slug,
+    name: c.name,
+    message: c.message,
+    createdAt: c.createdAt.toISOString(),
+  }));
 }
 
-export function createBlog(data: Omit<Blog, 'id' | 'likes' | 'likedBy' | 'comments'>): Blog {
-  const store = readStore();
-  const blog: Blog = {
-    ...data,
-    id: String(Date.now()),
-    likes: 0,
-    likedBy: [],
-    comments: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  store.blogs.push(blog);
-  writeStore(store);
-  return blog;
+export async function createBlog(data: Omit<Blog, 'id' | 'likes' | 'likedBy' | 'comments'>): Promise<Blog> {
+  const row = await prisma.blog.create({
+    data: {
+      title: data.title,
+      slug: data.slug,
+      category: data.category,
+      excerpt: data.excerpt,
+      content: data.content,
+      coverImage: data.coverImage,
+      author: data.author as unknown as Prisma.InputJsonValue,
+      featured: data.featured ?? false,
+      tags: data.tags ?? [],
+      keywords: data.keywords ?? [],
+    },
+    include: blogInclude,
+  });
+  return mapBlogRow(row);
 }
 
-export function updateBlog(id: string, data: Partial<Blog>): Blog {
-  const store = readStore();
-  const idx = store.blogs.findIndex((b) => b.id === id);
-  if (idx === -1) throw new Error('Blog not found');
-  store.blogs[idx] = { ...store.blogs[idx], ...data, updatedAt: new Date().toISOString() };
-  writeStore(store);
-  return store.blogs[idx];
+export async function updateBlog(id: string, data: Partial<Blog>): Promise<Blog> {
+  const row = await prisma.blog.update({
+    where: { id },
+    data: {
+      title: data.title,
+      slug: data.slug,
+      category: data.category,
+      excerpt: data.excerpt,
+      content: data.content,
+      coverImage: data.coverImage,
+      author: data.author !== undefined ? (data.author as unknown as Prisma.InputJsonValue) : undefined,
+      featured: data.featured,
+      tags: data.tags,
+      keywords: data.keywords,
+    },
+    include: blogInclude,
+  });
+  return mapBlogRow(row);
 }
 
-export function deleteBlog(id: string): void {
-  const store = readStore();
-  store.blogs = store.blogs.filter((b) => b.id !== id);
-  writeStore(store);
+export async function deleteBlog(id: string): Promise<void> {
+  await prisma.blog.delete({ where: { id } });
 }

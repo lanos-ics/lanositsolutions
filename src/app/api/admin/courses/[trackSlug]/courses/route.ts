@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tra
       return NextResponse.json({ error: 'slug, title, and description are required' }, { status: 400 });
     }
 
-    const course = createCourse(trackSlug, {
+    const course = await createCourse(trackSlug, {
       slug,
       title,
       description,

@@ -4,9 +4,12 @@ import { getTrackBySlug, getAllTrackSlugs } from "@/lib/course/api";
 import TrackPage from "@/components/sections/courses/TrackPage";
 import "./courses.css";
 
+export const dynamic = "force-dynamic";
+
 /* ─── Static params for all tracks ────────────────────────────── */
-export function generateStaticParams() {
-  return getAllTrackSlugs().map((slug) => ({ track: slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllTrackSlugs();
+  return slugs.map((slug) => ({ track: slug }));
 }
 
 /* ─── Dynamic metadata per track ──────────────────────────────── */
@@ -16,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ track: string }>;
 }): Promise<Metadata> {
   const { track: slug } = await params;
-  const track = getTrackBySlug(slug);
+  const track = await getTrackBySlug(slug);
   if (!track) return { title: "Track Not Found · Lanos IT Solutions" };
 
   return {
@@ -39,7 +42,7 @@ export default async function CoursesTrackPage({
   params: Promise<{ track: string }>;
 }) {
   const { track: slug } = await params;
-  const track = getTrackBySlug(slug);
+  const track = await getTrackBySlug(slug);
   if (!track) notFound();
 
   return <TrackPage track={track} />;
