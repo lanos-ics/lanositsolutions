@@ -4,7 +4,7 @@ import { createBlog } from '@/lib/blog/store';
 import type { BlogCategory } from '@/lib/blog/types';
 
 export async function GET() {
-  const blogs = getAllBlogs();
+  const blogs = await getAllBlogs();
   return NextResponse.json(blogs);
 }
 
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'title, slug, category, content, and author are required' }, { status: 400 });
     }
 
-    const blog = createBlog({
+    const blog = await createBlog({
       title,
       slug,
       category: category as BlogCategory,

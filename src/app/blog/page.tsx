@@ -23,9 +23,8 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://lanositsolutions.com/blog' },
 };
 
-export default function BlogPage() {
-  const allBlogs = getAllBlogs();
-  const featured = getFeaturedBlogs(3);
+export default async function BlogPage() {
+  const [allBlogs, featured] = await Promise.all([getAllBlogs(), getFeaturedBlogs(3)]);
 
   return (
     <div style={{ minHeight: '100vh' }}>

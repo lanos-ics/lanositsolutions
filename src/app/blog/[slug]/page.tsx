@@ -16,13 +16,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://lanositsolutions.c
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const blogs = getAllBlogs();
+  const blogs = await getAllBlogs();
   return blogs.map(b => ({ slug: b.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const blog = getBlogBySlug(slug);
+  const blog = await getBlogBySlug(slug);
   if (!blog) return {};
 
   const url = `${BASE_URL}/blog/${blog.slug}`;
@@ -52,13 +52,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const blog = getBlogBySlug(slug);
+  const blog = await getBlogBySlug(slug);
   if (!blog) notFound();
 
   const [html, related, popular] = await Promise.all([
     markdownToHtml(blog.content),
-    Promise.resolve(getRelatedBlogs(slug, blog.category)),
-    Promise.resolve(getPopularBlogs(5)),
+    getRelatedBlogs(slug, blog.category),
+    getPopularBlogs(5),
   ]);
 
   const rt = readingTime(blog.content);

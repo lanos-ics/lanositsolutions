@@ -4,7 +4,7 @@ import { addComment, getComments } from '@/lib/blog/store';
 export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get('slug');
   if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 });
-  const comments = getComments(slug);
+  const comments = await getComments(slug);
   return NextResponse.json(comments);
 }
 
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     if (message.trim().length < 5) {
       return NextResponse.json({ error: 'Message too short' }, { status: 400 });
     }
-    const comment = addComment(slug, name, message);
+    const comment = await addComment(slug, name, message);
     return NextResponse.json(comment, { status: 201 });
   } catch (err) {
     console.error(err);

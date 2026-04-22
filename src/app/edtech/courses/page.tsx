@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function CoursesPage() {
-  const tracks = getAllTracks();
+export default async function CoursesPage() {
+  const tracks = await getAllTracks();
   return <CoursesIndex tracks={tracks} />;
 }

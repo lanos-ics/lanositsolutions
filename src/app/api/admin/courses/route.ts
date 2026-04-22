@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAllTracks, createTrack } from '@/lib/course/store';
 
 export async function GET() {
-  const tracks = getAllTracks();
+  const tracks = await getAllTracks();
   return NextResponse.json(tracks);
 }
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'slug, label, and description are required' }, { status: 400 });
     }
 
-    const track = createTrack({
+    const track = await createTrack({
       slug,
       label,
       description,

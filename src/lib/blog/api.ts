@@ -1,59 +1,128 @@
-import path from 'path';
-import fs from 'fs';
 import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import remarkGfm from 'remark-gfm';
-import type { Blog, BlogCategory, BlogStore } from './types';
+import { prisma } from '@/lib/prisma';
+import type { Blog, BlogCategory, Author, Comment } from './types';
 
-const DATA_PATH = path.join(process.cwd(), 'src/lib/blog/data.json');
-
-function readStore(): BlogStore {
-  const raw = fs.readFileSync(DATA_PATH, 'utf-8');
-  return JSON.parse(raw) as BlogStore;
+function mapBlog(row: {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  author: unknown;
+  featured: boolean;
+  tags: string[];
+  keywords: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  _count?: { likes: number };
+  likes?: { sessionId: string }[];
+  comments?: { id: string; name: string; message: string; createdAt: Date }[];
+}): Blog {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    category: row.category as BlogCategory,
+    excerpt: row.excerpt,
+    content: row.content,
+    coverImage: row.coverImage,
+    author: row.author as Author,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+    featured: row.featured,
+    tags: row.tags ?? [],
+    keywords: row.keywords ?? [],
+    likes: row._count?.likes ?? row.likes?.length ?? 0,
+    likedBy: row.likes?.map((l) => l.sessionId) ?? [],
+    comments: (row.comments ?? []).map((c): Comment => ({
+      id: c.id,
+      blogSlug: row.slug,
+      name: c.name,
+      message: c.message,
+      createdAt: c.createdAt.toISOString(),
+    })),
+  };
 }
 
-export function getAllBlogs(): Blog[] {
-  const { blogs } = readStore();
-  return blogs.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+const blogInclude = {
+  _count: { select: { likes: true } },
+  comments: { orderBy: { createdAt: 'desc' as const } },
+} as const;
+
+export async function getAllBlogs(): Promise<Blog[]> {
+  const rows = await prisma.blog.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: blogInclude,
+  });
+  return rows.map(mapBlog);
 }
 
-export function getBlogBySlug(slug: string): Blog | undefined {
-  const { blogs } = readStore();
-  return blogs.find((b) => b.slug === slug);
+export async function getBlogBySlug(slug: string): Promise<Blog | undefined> {
+  const row = await prisma.blog.findUnique({
+    where: { slug },
+    include: {
+      likes: { select: { sessionId: true } },
+      comments: { orderBy: { createdAt: 'desc' } },
+    },
+  });
+  if (!row) return undefined;
+  return mapBlog({ ...row, _count: { likes: row.likes.length } });
 }
 
-export function getBlogsByCategory(category: BlogCategory): Blog[] {
-  return getAllBlogs().filter((b) => b.category === category);
+export async function getBlogsByCategory(category: BlogCategory): Promise<Blog[]> {
+  const rows = await prisma.blog.findMany({
+    where: { category },
+    orderBy: { createdAt: 'desc' },
+    include: blogInclude,
+  });
+  return rows.map(mapBlog);
 }
 
-export function getFeaturedBlogs(limit = 3): Blog[] {
-  return getAllBlogs()
-    .filter((b) => b.featured)
-    .slice(0, limit);
+export async function getFeaturedBlogs(limit = 3): Promise<Blog[]> {
+  const rows = await prisma.blog.findMany({
+    where: { featured: true },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: blogInclude,
+  });
+  return rows.map(mapBlog);
 }
 
-export function getPopularBlogs(limit = 5): Blog[] {
-  return getAllBlogs()
-    .sort((a, b) => b.likes - a.likes)
-    .slice(0, limit);
+export async function getPopularBlogs(limit = 5): Promise<Blog[]> {
+  const rows = await prisma.blog.findMany({
+    orderBy: { likes: { _count: 'desc' } },
+    take: limit,
+    include: blogInclude,
+  });
+  return rows.map(mapBlog);
 }
 
-export function getRelatedBlogs(slug: string, category: BlogCategory, limit = 3): Blog[] {
-  return getAllBlogs()
-    .filter((b) => b.category === category && b.slug !== slug)
-    .slice(0, limit);
+export async function getRelatedBlogs(slug: string, category: BlogCategory, limit = 3): Promise<Blog[]> {
+  const rows = await prisma.blog.findMany({
+    where: { category, NOT: { slug } },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    include: blogInclude,
+  });
+  return rows.map(mapBlog);
 }
 
-export function searchBlogs(query: string): Blog[] {
-  const q = query.toLowerCase();
-  return getAllBlogs().filter(
-    (b) =>
-      b.title.toLowerCase().includes(q) ||
-      b.excerpt.toLowerCase().includes(q) ||
-      (b.tags ?? []).some((t) => t.toLowerCase().includes(q))
-  );
+export async function searchBlogs(query: string): Promise<Blog[]> {
+  const rows = await prisma.blog.findMany({
+    where: {
+      OR: [
+        { title: { contains: query, mode: 'insensitive' } },
+        { excerpt: { contains: query, mode: 'insensitive' } },
+      ],
+    },
+    orderBy: { createdAt: 'desc' },
+    include: blogInclude,
+  });
+  return rows.map(mapBlog);
 }
 
 export function readingTime(content: string): string {
