@@ -131,9 +131,27 @@ export function readingTime(content: string): string {
   return `${minutes} min read`;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
 export async function markdownToHtml(markdown: string): Promise<string> {
   const result = await remark().use(remarkGfm).use(remarkHtml, { sanitize: false }).process(markdown);
-  return result.toString();
+  // Inject id attributes on h1–h3 so TOC anchor links resolve correctly
+  const html = result.toString().replace(
+    /<(h[1-3])([^>]*)>([\s\S]*?)<\/\1>/gi,
+    (_, tag, attrs, inner) => {
+      const text = inner.replace(/<[^>]+>/g, '');
+      const id = slugify(text);
+      return `<${tag}${attrs} id="${id}">${inner}</${tag}>`;
+    }
+  );
+  return html;
 }
 
 export function formatDate(dateString: string): string {
@@ -151,11 +169,7 @@ export function extractTocItems(markdown: string): { id: string; text: string; l
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length;
     const text = match[2].trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-');
-    items.push({ id, text, level });
+    items.push({ id: slugify(text), text, level });
   }
   return items;
 }
