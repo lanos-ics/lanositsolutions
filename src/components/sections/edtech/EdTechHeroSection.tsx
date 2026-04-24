@@ -285,7 +285,7 @@ export default function EdTechHeroSection() {
           >
             {/* Primary CTA — external link */}
             <Link
-              href="/edtech/learning"
+              href="/edtech/courses"
               className="et-cta-primary"
               style={{
                 display:       "inline-flex",

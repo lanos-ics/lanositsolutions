@@ -11,7 +11,7 @@ export default function BlogAuthor({ author, date, readingTime }: BlogAuthorProp
     year: 'numeric', month: 'long', day: 'numeric',
   });
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.5rem', borderRadius: '16px', background: 'rgba(26,26,27,0.03)', border: '1px solid rgba(26,26,27,0.07)' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', padding: '1.25rem 1.5rem', borderRadius: '16px', background: 'rgba(26,26,27,0.03)', border: '1px solid rgba(26,26,27,0.07)', flexWrap: 'wrap' }}>
       <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent), var(--navy))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.1rem', fontWeight: 700, flexShrink: 0 }}>
         {author.name.charAt(0)}
       </div>

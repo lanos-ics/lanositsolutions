@@ -22,7 +22,7 @@ export default function BlogHero({ blog, readingTime }: BlogHeroProps) {
     <div style={{
       position: 'relative',
       width: '100%',
-      minHeight: '480px',
+      minHeight: 'clamp(220px, 50vw, 480px)',
       display: 'flex',
       alignItems: 'flex-end',
       overflow: 'hidden',

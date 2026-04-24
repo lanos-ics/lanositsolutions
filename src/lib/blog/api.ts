@@ -131,9 +131,31 @@ export function readingTime(content: string): string {
   return `${minutes} min read`;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
 export async function markdownToHtml(markdown: string): Promise<string> {
   const result = await remark().use(remarkGfm).use(remarkHtml, { sanitize: false }).process(markdown);
-  return result.toString();
+  // Inject id attributes on h1–h3 so TOC anchor links resolve correctly
+  const seen = new Map<string, number>();
+  const html = result.toString().replace(
+    /<(h[1-3])([^>]*)>([\s\S]*?)<\/\1>/gi,
+    (_, tag, attrs, inner) => {
+      const text = inner.replace(/<[^>]+>/g, '');
+      const base = slugify(text);
+      const count = seen.get(base) ?? 0;
+      seen.set(base, count + 1);
+      const id = count === 0 ? base : `${base}-${count}`;
+      return `<${tag}${attrs} id="${id}">${inner}</${tag}>`;
+    }
+  );
+  return html;
 }
 
 export function formatDate(dateString: string): string {
@@ -147,14 +169,15 @@ export function formatDate(dateString: string): string {
 export function extractTocItems(markdown: string): { id: string; text: string; level: number }[] {
   const headingRegex = /^(#{1,3})\s+(.+)$/gm;
   const items: { id: string; text: string; level: number }[] = [];
+  const seen = new Map<string, number>();
   let match;
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length;
     const text = match[2].trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-');
+    const base = slugify(text);
+    const count = seen.get(base) ?? 0;
+    seen.set(base, count + 1);
+    const id = count === 0 ? base : `${base}-${count}`;
     items.push({ id, text, level });
   }
   return items;

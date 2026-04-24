@@ -106,7 +106,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           }}
         >
           {/* Main article */}
-          <article>
+          <article style={{ minWidth: 0 }}>
             <BlogAuthor author={blog.author} date={blog.createdAt} readingTime={rt} />
 
             <div style={{ marginTop: '2.5rem' }}>
@@ -138,7 +138,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           {/* Sidebar */}
           <aside style={{ position: 'sticky', top: 'calc(var(--nav-h) + 2rem)', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
             {tocItems.length > 0 && (
-              <div style={{ padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(26,26,27,0.08)', background: 'rgba(26,26,27,0.02)' }}>
+              <div className="desktop-toc" style={{ padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(26,26,27,0.08)', background: 'rgba(26,26,27,0.02)' }}>
                 <TableOfContents items={tocItems} />
               </div>
             )}
@@ -152,14 +152,26 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         </div>
       </div>
 
-      {/* Responsive layout: stack on mobile */}
       <style>{`
         @media (max-width: 900px) {
+          .desktop-toc { display: none !important; }
           .blog-detail-layout {
             grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+            padding: 1.5rem 1rem !important;
           }
           .blog-detail-layout > aside {
             position: static !important;
+            display: grid !important;
+            flex-direction: unset !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .blog-detail-layout > aside {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TocItem {
   id: string;
@@ -14,21 +14,53 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ items }: TableOfContentsProps) {
   const [active, setActive] = useState<string>('');
+  const visibleRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!items.length) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            visibleRef.current.add(e.target.id);
+          } else {
+            visibleRef.current.delete(e.target.id);
+          }
+        });
+
+        // Pick the first item (in document order) that is currently visible
+        for (const { id } of items) {
+          if (visibleRef.current.has(id)) {
+            setActive(id);
+            return;
+          }
+        }
       },
-      { rootMargin: '-80px 0px -60% 0px' }
+      { rootMargin: '-80px 0px -40% 0px', threshold: 0 }
     );
+
     items.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
+
     return () => observer.disconnect();
   }, [items]);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const navHeight = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue('--nav-h') || '0',
+      10
+    );
+    const offset = (isNaN(navHeight) ? 80 : navHeight) + 16;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
 
   if (!items.length) return null;
 
@@ -41,6 +73,7 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
             <a
               key={item.id}
               href={`#${item.id}`}
+              onClick={(e) => handleClick(e, item.id)}
               style={{
                 fontSize: item.level === 1 ? '0.82rem' : '0.78rem',
                 fontWeight: item.id === active ? 600 : 400,
@@ -54,10 +87,6 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
                 lineHeight: 1.4,
                 display: 'block',
               } as React.CSSProperties}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
             >
               {item.text}
             </a>

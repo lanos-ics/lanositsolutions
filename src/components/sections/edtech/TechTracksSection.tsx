@@ -3,178 +3,13 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import type { Track } from "@/lib/course/types";
 
-/* ─── Types ─────────────────────────────────────────────────────── */
-interface Track {
-  num: string;
-  label: string;
-  sub: string;
-  slug?: string;
-  isNew?: boolean;
-  isResearch?: boolean;
-}
-
-interface Group {
-  id: string;
-  emoji: string;
-  label: string;
-  accent: string;
-  accentBg: string;
-  accentBorder: string;
-  accentGlow: string;
+interface Props {
   tracks: Track[];
 }
 
-/* ─── Category groups ────────────────────────────────────────────── */
-const GROUPS: Group[] = [
-  {
-    id: "foundation",
-    emoji: "🔰",
-    label: "Foundation",
-    accent: "#E5404F",
-    accentBg: "rgba(229,64,79,0.08)",
-    accentBorder: "rgba(229,64,79,0.18)",
-    accentGlow: "rgba(229,64,79,0.11)",
-    tracks: [
-      {
-        num: "01",
-        label: "Programming Foundations",
-        sub: "Start from zero and build strong logical and coding fundamentals.",
-        slug: "programming-foundations",
-      },
-      {
-        num: "06",
-        label: "Programming Mastery",
-        sub: "Master languages like Java, Python, C++, and system-level thinking.",
-        slug: "programming-mastery",
-      },
-    ],
-  },
-  {
-    id: "web",
-    emoji: "🌐",
-    label: "Web Systems",
-    accent: "#2A7DE1",
-    accentBg: "rgba(42,125,225,0.08)",
-    accentBorder: "rgba(42,125,225,0.18)",
-    accentGlow: "rgba(42,125,225,0.11)",
-    tracks: [
-      {
-        num: "02",
-        label: "Web Design & UI Systems",
-        sub: "Design modern, responsive interfaces with real-world design principles.",
-        slug: "web-design-ui-systems",
-      },
-      {
-        num: "03",
-        label: "Frontend Engineering",
-        sub: "Build interactive, scalable user interfaces using modern frameworks.",
-        slug: "frontend-engineering",
-      },
-      {
-        num: "04",
-        label: "Backend Systems",
-        sub: "Develop secure, scalable server-side applications and architectures.",
-        slug: "backend-engineering",
-      },
-      {
-        num: "05",
-        label: "API & System Integration",
-        sub: "Design and build REST APIs powering real-world applications.",
-        slug: "api-system-integration",
-      },
-    ],
-  },
-  {
-    id: "data-security",
-    emoji: "📊",
-    label: "Data + Security",
-    accent: "#1DAB6E",
-    accentBg: "rgba(29,171,110,0.08)",
-    accentBorder: "rgba(29,171,110,0.18)",
-    accentGlow: "rgba(29,171,110,0.11)",
-    tracks: [
-      {
-        num: "12",
-        label: "Data Science & Analytics",
-        sub: "Analyze data, build models, and extract actionable business insights.",
-        isNew: true,
-        slug: "data-science-analytics",
-      },
-      {
-        num: "07",
-        label: "Cyber Security",
-        sub: "Understand vulnerabilities and secure real-world applications and systems.",
-      },
-    ],
-  },
-  {
-    id: "advanced",
-    emoji: "⚙️",
-    label: "Advanced Systems",
-    accent: "#9B5CF6",
-    accentBg: "rgba(155,92,246,0.08)",
-    accentBorder: "rgba(155,92,246,0.18)",
-    accentGlow: "rgba(155,92,246,0.11)",
-    tracks: [
-      {
-        num: "08",
-        label: "IoT & Drone Technology",
-        sub: "Build connected systems, embedded devices, and automation solutions.",
-      },
-      {
-        num: "09",
-        label: "AR / VR / XR Systems",
-        sub: "Create immersive digital experiences and spatial computing applications.",
-      },
-      {
-        num: "10",
-        label: "BCI & EEG Research",
-        sub: "Explore brain-computer interfaces and next-generation neurotechnology.",
-        isResearch: true,
-      },
-      {
-        num: "14",
-        label: "AI & Mathematics",
-        sub: "Deep mathematical foundations for AI and machine learning systems.",
-        isNew: true,
-        slug: "ai-mathematics",
-      },
-      {
-        num: "15",
-        label: "Mobile Development",
-        sub: "Build native and cross-platform mobile applications.",
-        isNew: true,
-        slug: "mobile-development",
-      },
-    ],
-  },
-  {
-    id: "tools",
-    emoji: "🏗️",
-    label: "Tools",
-    accent: "#E88C2A",
-    accentBg: "rgba(232,140,42,0.08)",
-    accentBorder: "rgba(232,140,42,0.18)",
-    accentGlow: "rgba(232,140,42,0.11)",
-    tracks: [
-      {
-        num: "11",
-        label: "CAD & Design Software",
-        sub: "Work with industry tools like AutoCAD, Revit, SketchUp and design systems.",
-        slug: "tools",
-      },
-      {
-        num: "13",
-        label: "Digital Accounting & MS Office 360",
-        sub: "Master professional productivity and digital finance tools for the modern workplace.",
-        slug: "tools",
-      },
-    ],
-  },
-];
-
-export default function TechTracksSection() {
+export default function TechTracksSection({ tracks }: Props) {
   const headRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -211,6 +46,8 @@ export default function TechTracksSection() {
     });
   }, []);
 
+  const visibleTracks = tracks.filter((t) => t.courses.length > 0);
+
   return (
     <section
       id="tech-tracks"
@@ -245,7 +82,7 @@ export default function TechTracksSection() {
             marginBottom: "1.25rem",
           }}
         >
-          Tech Tracks
+          Tech Tracks & Courses
         </span>
         <p
           style={{
@@ -265,12 +102,12 @@ export default function TechTracksSection() {
         </p>
       </div>
 
-      {/* ── Groups ──────────────────────────────────────────────── */}
+      {/* ── Tracks + courses ────────────────────────────────────── */}
       <div ref={bodyRef} style={{ display: "flex", flexDirection: "column", gap: "4.5rem" }}>
-        {GROUPS.map((group) => (
-          <div key={group.id} className="tts-group">
+        {visibleTracks.map((track) => (
+          <div key={track.slug} className="tts-group">
 
-            {/* Group header */}
+            {/* Track header */}
             <div
               className="tts-group-header"
               style={{
@@ -280,116 +117,98 @@ export default function TechTracksSection() {
                 marginBottom: "1.75rem",
               }}
             >
-              <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>{group.emoji}</span>
+              <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>{track.emoji}</span>
               <span
                 style={{
                   fontSize: "0.7rem",
                   fontWeight: 700,
                   letterSpacing: "0.16em",
                   textTransform: "uppercase",
-                  color: group.accent,
+                  color: track.accent,
                   padding: "0.3rem 0.85rem",
                   borderRadius: "100px",
-                  background: group.accentBg,
-                  border: `1px solid ${group.accentBorder}`,
+                  background: track.accentBg,
+                  border: `1px solid ${track.accentBorder}`,
                 }}
               >
-                {group.label}
+                {track.label}
               </span>
+              {track.comingSoon && (
+                <span className="tts-badge tts-badge--soon">Coming Soon</span>
+              )}
               <div
                 style={{
                   flex: 1,
                   height: "1px",
-                  background: `linear-gradient(to right, ${group.accentBorder}, transparent)`,
+                  background: `linear-gradient(to right, ${track.accentBorder}, transparent)`,
                   marginLeft: "0.5rem",
                 }}
               />
             </div>
 
-            {/* Cards row */}
+            {/* Course cards */}
             <div className="tts-row">
-              {group.tracks.map((track) => {
-                const cardContent = (
-                  <>
-                    {/* Top accent bar */}
-                    <div
-                      className="tts-topbar"
-                      style={{ background: group.accent }}
-                    />
+              {track.courses.map((course) => (
+                <Link
+                  key={course.slug}
+                  href={`/edtech/courses/${track.slug}/${course.slug}`}
+                  className="tts-card"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  {/* Top accent bar */}
+                  <div className="tts-topbar" style={{ background: track.accent }} />
 
-                    {/* Glow */}
-                    <div
-                      className="tts-glow"
-                      style={{
-                        background: `radial-gradient(ellipse at 10% 0%, ${group.accentGlow} 0%, transparent 70%)`,
-                      }}
-                    />
+                  {/* Glow */}
+                  <div
+                    className="tts-glow"
+                    style={{
+                      background: `radial-gradient(ellipse at 10% 0%, ${track.accentGlow} 0%, transparent 70%)`,
+                    }}
+                  />
 
-                    {/* Card body */}
-                    <div className="tts-card-body">
-                      {/* Number + badges row */}
-                      <div className="tts-meta-row">
-                        <span
-                          className="tts-num"
-                          style={{ color: group.accent }}
-                        >
-                          ⚔️ {track.num}
-                        </span>
-                        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
-                          {/* Category tag */}
-                          <span
-                            className="tts-tag"
-                            style={{
-                              background: group.accentBg,
-                              color: group.accent,
-                              border: `1px solid ${group.accentBorder}`,
-                            }}
-                          >
-                            {group.label}
-                          </span>
-                          {/* NEW badge */}
-                          {track.isNew && (
-                            <span className="tts-badge tts-badge--new">NEW</span>
-                          )}
-                          {/* RESEARCH badge */}
-                          {track.isResearch && (
-                            <span className="tts-badge tts-badge--research">Research</span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Title */}
-                      <p className="tts-label">{track.label}</p>
-
-                      {/* Description */}
-                      <p className="tts-sub">{track.sub}</p>
-
-                      {/* Arrow */}
-                      <div
-                        className="tts-arrow"
-                        style={{ color: group.accent }}
-                      >
-                        ↗
+                  {/* Card body */}
+                  <div className="tts-card-body">
+                    {/* Icon + badges row */}
+                    <div className="tts-meta-row">
+                      <span className="tts-icon">{course.icon}</span>
+                      <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+                        {course.badge === "new" && (
+                          <span className="tts-badge tts-badge--new">New</span>
+                        )}
+                        {course.badge === "popular" && (
+                          <span className="tts-badge tts-badge--popular">Popular</span>
+                        )}
+                        {course.badge === "bestseller" && (
+                          <span className="tts-badge tts-badge--best">Bestseller</span>
+                        )}
                       </div>
                     </div>
-                  </>
-                );
 
-                return track.slug ? (
-                  <Link
-                    key={track.num}
-                    href={`/edtech/courses/${track.slug}`}
-                    className="tts-card"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    {cardContent}
-                  </Link>
-                ) : (
-                  <div key={track.num} className="tts-card">
-                    {cardContent}
+                    {/* Title */}
+                    <p className="tts-label">{course.title}</p>
+
+                    {/* Description */}
+                    <p className="tts-sub">
+                      {course.briefDescription ?? course.description}
+                    </p>
+
+                    {/* Price + arrow row */}
+                    <div className="tts-footer">
+                      <div className="tts-price-group">
+                        <span className="tts-price" style={{ color: track.accent }}>
+                          ₹{course.price.toLocaleString("en-IN")}
+                        </span>
+                        {course.originalPrice > course.price && (
+                          <span className="tts-original-price">
+                            ₹{course.originalPrice.toLocaleString("en-IN")}
+                          </span>
+                        )}
+                      </div>
+                      <div className="tts-arrow" style={{ color: track.accent }}>↗</div>
+                    </div>
                   </div>
-                );
-              })}
+                </Link>
+              ))}
             </div>
           </div>
         ))}
@@ -439,7 +258,7 @@ export default function TechTracksSection() {
           display: flex;
           flex-direction: column;
           gap: 0.6rem;
-          min-height: 190px;
+          min-height: 200px;
         }
 
         .tts-meta-row {
@@ -450,21 +269,9 @@ export default function TechTracksSection() {
           flex-wrap: wrap;
         }
 
-        .tts-num {
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          font-family: "JetBrains Mono", monospace;
-          opacity: 0.85;
-        }
-
-        .tts-tag {
-          font-size: 0.6rem;
-          font-weight: 700;
-          letter-spacing: 0.13em;
-          text-transform: uppercase;
-          padding: 0.22rem 0.65rem;
-          border-radius: 100px;
+        .tts-icon {
+          font-size: 1.3rem;
+          line-height: 1;
         }
 
         .tts-badge {
@@ -480,10 +287,26 @@ export default function TechTracksSection() {
           color: #1DAB6E;
           border: 1px solid rgba(29,171,110,0.25);
         }
-        .tts-badge--research {
-          background: rgba(155,92,246,0.12);
-          color: #9B5CF6;
-          border: 1px solid rgba(155,92,246,0.22);
+        .tts-badge--popular {
+          background: rgba(42,125,225,0.13);
+          color: #2A7DE1;
+          border: 1px solid rgba(42,125,225,0.25);
+        }
+        .tts-badge--best {
+          background: rgba(232,140,42,0.13);
+          color: #E88C2A;
+          border: 1px solid rgba(232,140,42,0.25);
+        }
+        .tts-badge--soon {
+          font-size: 0.58rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          padding: 0.22rem 0.6rem;
+          border-radius: 100px;
+          background: rgba(232,140,42,0.13);
+          color: #E88C2A;
+          border: 1px solid rgba(232,140,42,0.25);
         }
 
         .tts-label {
@@ -501,15 +324,44 @@ export default function TechTracksSection() {
           margin: 0;
           line-height: 1.55;
           flex: 1;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .tts-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 0.25rem;
+        }
+
+        .tts-price-group {
+          display: flex;
+          align-items: baseline;
+          gap: 0.5rem;
+        }
+
+        .tts-price {
+          font-size: 1rem;
+          font-weight: 700;
+          font-family: "JetBrains Mono", monospace;
+          letter-spacing: -0.02em;
+        }
+
+        .tts-original-price {
+          font-size: 0.75rem;
+          color: var(--fg-muted);
+          text-decoration: line-through;
+          opacity: 0.6;
         }
 
         .tts-arrow {
           font-size: 1.05rem;
-          margin-top: 0.25rem;
           opacity: 0;
           transform: translate(-4px, 4px);
           transition: opacity 0.25s, transform 0.25s;
-          align-self: flex-end;
         }
 
         @media (max-width: 600px) {
