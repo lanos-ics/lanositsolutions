@@ -6,6 +6,7 @@ import VoicesSection           from "@/components/sections/edtech/VoicesSection"
 import CareerOutcomesSection   from "@/components/sections/edtech/CareerOutcomesSection";
 import EdTechClosingSection    from "@/components/sections/edtech/EdTechClosingSection";
 import { getAllTracks }         from "@/lib/course/api";
+import './edtech.css';
 
 export const metadata = {
   title: "EdTech · Lanos IT Solutions",
