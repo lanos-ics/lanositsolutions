@@ -41,18 +41,20 @@ export function BlogCard({ post }: { post: BlogCardData }) {
           background:   "#e5e7eb",
         }}
       >
-        <Image
-          src={post.coverImage}
-          alt={post.title}
-          fill
-          style={{
-            objectFit:  "cover",
-            transform:   hovered ? "scale(1.045)" : "scale(1)",
-            transition:  "transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-            willChange:  "transform",
-          }}
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
+        {post.coverImage && (
+          <Image
+            src={post.coverImage}
+            alt={post.title}
+            fill
+            style={{
+              objectFit:  "cover",
+              transform:   hovered ? "scale(1.045)" : "scale(1)",
+              transition:  "transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              willChange:  "transform",
+            }}
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        )}
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
