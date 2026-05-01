@@ -313,8 +313,8 @@ export default function ContactPage() {
               <ContactInfoCard 
                 icon={Phone} 
                 title="Call Us" 
-                content="+91 98765 43210" 
-                link="tel:+919876543210"
+                content="+91 96447 09024" 
+                link="tel:+919644709024"
               />
               <ContactInfoCard 
                 icon={MapPin} 

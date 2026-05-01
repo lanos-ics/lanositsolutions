@@ -15,6 +15,8 @@ interface TableOfContentsProps {
 export default function TableOfContents({ items }: TableOfContentsProps) {
   const [active, setActive] = useState<string>('');
   const visibleRef = useRef<Set<string>>(new Set());
+  const navRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
   useEffect(() => {
     if (!items.length) return;
@@ -29,7 +31,6 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
           }
         });
 
-        // Pick the first item (in document order) that is currently visible
         for (const { id } of items) {
           if (visibleRef.current.has(id)) {
             setActive(id);
@@ -47,6 +48,22 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
 
     return () => observer.disconnect();
   }, [items]);
+
+  useEffect(() => {
+    if (!active) return;
+    const link = linkRefs.current[active];
+    const nav = navRef.current;
+    if (!link || !nav) return;
+    const linkTop = link.offsetTop;
+    const linkBottom = linkTop + link.offsetHeight;
+    const navScrollTop = nav.scrollTop;
+    const navBottom = navScrollTop + nav.clientHeight;
+    if (linkTop < navScrollTop) {
+      nav.scrollTo({ top: linkTop - 8, behavior: 'smooth' });
+    } else if (linkBottom > navBottom) {
+      nav.scrollTo({ top: linkBottom - nav.clientHeight + 8, behavior: 'smooth' });
+    }
+  }, [active]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
@@ -68,11 +85,12 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
     <div>
       <h3 style={{ fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: '1rem', opacity: 0.65 }}>On this page</h3>
       <nav aria-label="Table of contents">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+        <div ref={navRef} data-lenis-prevent style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', maxHeight: '60vh', overflowY: 'auto', scrollbarWidth: 'thin', scrollbarColor: 'rgba(26,26,27,0.15) transparent' }}>
           {items.map(item => (
             <a
               key={item.id}
               href={`#${item.id}`}
+              ref={el => { linkRefs.current[item.id] = el; }}
               onClick={(e) => handleClick(e, item.id)}
               style={{
                 fontSize: item.level === 1 ? '0.82rem' : '0.78rem',
